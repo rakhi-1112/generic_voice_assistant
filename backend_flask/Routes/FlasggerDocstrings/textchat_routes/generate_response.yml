@@ -1,0 +1,37 @@
+tags:
+  - Language Model
+summary: Generate a chat response using the current LLM session
+consumes:
+  - application/json
+produces:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - prompt
+      properties:
+        prompt:
+          type: string
+          description: User's input to send to the language model
+          example: What is the capital of France?
+responses:
+  200:
+    description: Successful response from the language model
+    schema:
+      type: object
+      properties:
+        response:
+          type: string
+          example: The capital of France is Paris.
+  400:
+    description: Invalid input or prompt missing
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Prompt is required

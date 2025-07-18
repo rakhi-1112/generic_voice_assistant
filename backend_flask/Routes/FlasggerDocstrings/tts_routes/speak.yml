@@ -1,0 +1,42 @@
+tags:
+  - Text-to-Speech
+summary: Convert text to speech and return the audio file
+consumes:
+  - application/json
+produces:
+  - audio/mpeg
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          description: Text to convert to speech
+          example: Hello, how are you?
+        language:
+          type: string
+          description: Language code for TTS (default is 'en')
+          example: en
+responses:
+  200:
+    description: MP3 audio file of the generated speech
+    content:
+      audio/mpeg:
+        schema:
+          type: string
+          format: binary
+  400:
+    description: Missing or invalid input
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: Text is required

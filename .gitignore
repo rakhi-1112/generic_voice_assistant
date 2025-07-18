@@ -1,0 +1,21 @@
+# VSCode & PyCharm settings
+.vscode/
+.idea/
+
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Model files
+*.gguf
+
+# Personal Notes
+/Resources
+
+# Output Path audio files
+backend_flask/OutputPath/*
+!backend_flask/OutputPath/.gitkeep
+
+# Secrets
+/secrets

@@ -1,0 +1,38 @@
+tags:
+  - Speech-to-Text
+summary: Transcribe uploaded audio to text
+consumes:
+  - multipart/form-data
+produces:
+  - application/json
+parameters:
+  - in: formData
+    name: audio
+    type: file
+    required: true
+    description: Audio file to transcribe
+  - in: formData
+    name: is_numeric
+    type: boolean
+    required: false
+    default: false
+    description: |
+      If true, number words in the transcript will be converted to digits.
+      For example, "twenty five" will be transcribed as "25".
+responses:
+  200:
+    description: Transcription result
+    schema:
+      type: object
+      properties:
+        transcript:
+          type: string
+          example: Hello, this is a test. I am 25 years old.
+  400:
+    description: Missing or invalid file
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: No audio file uploaded

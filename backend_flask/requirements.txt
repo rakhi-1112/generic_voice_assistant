@@ -1,0 +1,25 @@
+# Whisper
+openai-whisper
+
+# Torch
+torch
+
+# gTTS
+gTTS
+pydub
+
+#LLM
+gpt4all
+
+# Flask
+flask
+
+# Swagger Page for Flask Endpoints
+flasgger
+
+# Firebase
+firebase-admin
+
+# Text to number
+spacy
+numerizer

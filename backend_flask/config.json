@@ -1,0 +1,58 @@
+{
+  "stt": {
+    "engine": {
+      "value": "whisper",
+      "description": "The STT engine to use: (for now only whisper is supported)",
+      "type": "string",
+      "required": true
+    },
+    "whisper_model": {
+      "value": "small",
+      "description": "Model size for the Whisper engine (tiny / base / small / medium / large)",
+      "type": "string",
+      "required": true
+    }
+  },
+  "tts": {
+    "engine": {
+      "value": "gTTS",
+      "description": "The TTS engine to use: (for now only gTTS is supported)",
+      "type": "string",
+      "required": true
+    },
+    "gtts_char_limit": {
+      "value": "250",
+      "description": "The character limit per request to gTTS",
+      "type": "int",
+      "required": true
+    },
+    "gtts_accent_region": {
+      "value": "UK",
+      "description": "The possible values are us, uk, australia, canada, india, ireland, south_africa",
+      "type": "string",
+      "required": false
+    }
+  },
+  "language_model": {
+    "model_gguf_file_name": {
+      "value": "Meta-Llama-3-8B-Instruct.Q4_0.gguf",
+      "description": "Place the gguf file in the ModelPath directory. Otherwise the application will try to auto download the gguf to the same path",
+      "type": "string",
+      "required": true
+    },
+    "max_context_window": {
+      "value": "4096",
+      "description": "Maximum context window size for the model. Try not to go beyond 8192.",
+      "type": "int",
+      "required": true
+    }
+  },
+  "firebase": {
+    "firebase_sdk_path": {
+      "value": "secrets/generic-voice-assistant-firebase-adminsdk-fbsvc-6a978b20ad.json",
+      "description": "Relative path to the firebase sdk json file for your firebase project. WARNING: DO NOT PUSH THE SDK FILE TO GITHUB. Instead, paste it anywhere within the project directory and enter the relative path to it here. Make sure the path is relative to the root of the project.",
+      "type": "string",
+      "required": true
+    }
+  }
+}

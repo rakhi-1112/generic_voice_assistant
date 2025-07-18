@@ -1,0 +1,37 @@
+tags:
+  - Voice Chat
+summary: Set or update the system prompt for the current LLM session
+consumes:
+  - application/json
+produces:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - prompt
+      properties:
+        prompt:
+          type: string
+          description: Custom system prompt to guide the LLM behavior
+          example: You are a supportive language tutor.
+responses:
+  200:
+    description: System prompt set successfully
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: System prompt updated successfully.
+  400:
+    description: Missing system prompt in request
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Prompt is required

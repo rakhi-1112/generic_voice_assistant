@@ -1,0 +1,78 @@
+tags:
+  - Investment Advisory
+summary: Submit investment data for a user
+description: Accepts investment details and stores them in Firebase Firestore under the user's record, looked up by username.
+consumes:
+  - application/json
+produces:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - username
+        - age_group
+        - inv_frequency
+        - inv_goal
+        - inv_risk
+        - inv_amount
+      properties:
+        username:
+          type: string
+          example: johndoe
+        age_group:
+          type: integer
+          minimum: 0
+          maximum: 150
+          example: 30
+        inv_frequency:
+          type: string
+          enum: [recurring, lumpsum]
+          example: recurring
+        inv_goal:
+          type: number
+          example: 100000
+        inv_risk:
+          type: integer
+          minimum: 0
+          maximum: 100
+          example: 70
+        inv_amount:
+          type: number
+          example: 5000
+responses:
+  200:
+    description: Investment data saved successfully
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Investment data saved successfully
+  400:
+    description: Validation error
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Missing field - inv_goal
+  404:
+    description: Username not found
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Username not found
+  500:
+    description: Server error
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: An unexpected error occurred.

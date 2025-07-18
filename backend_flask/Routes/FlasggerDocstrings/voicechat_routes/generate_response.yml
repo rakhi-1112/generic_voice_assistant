@@ -1,0 +1,31 @@
+tags:
+  - Voice Chat
+summary: Get audio response for an audio query
+consumes:
+  - multipart/form-data
+produces:
+  - audio/mpeg
+parameters:
+  - name: audio
+    in: formData
+    type: file
+    required: true
+    description: Audio file input (e.g., .mp3, .wav)
+responses:
+  200:
+    description: Audio file containing the spoken response from the LLM
+    content:
+      audio/mpeg:
+        schema:
+          type: string
+          format: binary
+  400:
+    description: Invalid input or processing failure
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: No audio file uploaded
