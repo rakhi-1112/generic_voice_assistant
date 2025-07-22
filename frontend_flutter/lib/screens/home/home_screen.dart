@@ -2,30 +2,63 @@ import 'package:flutter/material.dart';
 import '../settings/settings_screen.dart';
 import '../voice_chat/voice_chat_screen.dart';
 import '../investment_options/investment_options_screen.dart';
+import '../text_chat/text_chat_screen.dart';
+import '../financial_toolkit/financial_toolkit_menu.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  @override
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Home"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.mic),
-            tooltip: "Voice Chat",
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const VoiceChatScreen()),
-              );
-            },
-          )
-        ],
       ),
       drawer: const AppSidebar(),
-      body: const Center(child: Text("Welcome to Home")),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("Welcome to Home", style: TextStyle(fontSize: 20)),
+            const SizedBox(height: 30),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.mic),
+              label: const Text(
+                "VoiceChat",
+                style: TextStyle(fontSize: 18),
+              ),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                backgroundColor: Colors.blue,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const VoiceChatScreen()),
+                );
+              },
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.chat),
+              label: const Text(
+                "TextChat",
+                style: TextStyle(fontSize: 18),
+              ),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                backgroundColor: Colors.green,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const TextChatScreen()),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -65,6 +98,15 @@ class AppSidebar extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => const InvestmentOptionsScreen(),
+              ));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.build), // You can change icon
+            title: const Text("Financial Toolkit"),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const FinancialToolkitMenu(),
               ));
             },
           ),

@@ -23,6 +23,9 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
   final TextEditingController _investmentGoalController = TextEditingController();
   final TextEditingController _investmentRiskController = TextEditingController();
   final TextEditingController _investmentAmountController = TextEditingController();
+  final TextEditingController _regionController = TextEditingController();
+
+
 
   String _investmentFrequency = 'Recurring';
   String _username = '';
@@ -144,7 +147,9 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
       - Investment Goal: ${_investmentGoalController.text}
       - Investment Risk: ${_investmentRiskController.text}
       - Investment Amount: ${_investmentAmountController.text}
+      - Region: ${_regionController.text}
       
+      Please refuse to answer questions that are not relevant to your role.
       Please answer any questions keeping these factors in mind.
     ''';
 
@@ -166,8 +171,15 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
       - Investment Goal: ${_investmentGoalController.text}
       - Investment Risk: ${_investmentRiskController.text}
       - Investment Amount: ${_investmentAmountController.text}
+      - Region: ${_regionController.text}
+      Instructions:
+        1. Analyze the user's profile to generate a personalized investment recommendation.
+        2. Tailor suggestions to region-specific schemes or financial products.
+        3. Ensure the advice is understandable, unbiased, and secure (no sensitive data stored or reused).
+        4. Make the response accessible to users with possible impairments (clear language, structured format).
+        5. Create a table with your breakdown of the investment options, for example, equity: 20%, government bonds: 30%, etc.
       
-      Please generate a suitable investment strategy.
+        Now, take the inputs and respond accordingly.
     ''';
 
     try {
@@ -214,6 +226,7 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
       "inv_goal": double.parse(_investmentGoalController.text),
       "inv_risk": double.parse(_investmentRiskController.text),
       "inv_amount": double.parse(_investmentAmountController.text),
+      "reg": _regionController.text,
     };
 
     try {
@@ -344,6 +357,11 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
                 controller: _investmentAmountController,
                 isNumber: true,
                 validator: (v) => double.tryParse(v ?? "") == null ? "Enter a number" : null,
+              ),
+                _buildFieldWithSpeech(
+                label: "Region",
+                controller: _regionController,
+                validator: (v) => (v == null || v.isEmpty) ? "Enter Region" : null,
               ),
               const SizedBox(height: 30),
               ElevatedButton(onPressed: _submitForm, child: const Text("Save")),

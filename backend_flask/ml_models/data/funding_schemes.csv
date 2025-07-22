@@ -1,0 +1,21 @@
+﻿name,description,region,industry,eligibility,funding_min,funding_max
+Startup India,Support for early-stage startups in all regions,All,Technology,early-stage,50000,200000
+Women Entrepreneur Scheme,Fund for women-led businesses in North India,North,Retail,early-stage,10000,50000
+Green Fund,Grants for eco-friendly businesses,All,Energy,growth-stage,50000,100000
+Tech Expansion,Funds for tech firms scaling operations,South,Technology,scale-up,100000,300000
+MSME Boost,Micro businesses in manufacturing sector,East,Manufacturing,early-stage,25000,100000
+Rural Upliftment Program,Funding for businesses in rural areas,All,Agriculture,growth-stage,15000,75000
+Youth Startup Fund,Targeted fund for youth entrepreneurs,West,Education,early-stage,20000,60000
+Digital Bharat,Support for digital transformation in small businesses,North,Technology,growth-stage,30000,120000
+Energy Innovate,Funds for green energy and solar startups,South,Energy,early-stage,50000,150000
+Retail Revival,Working capital for local retail businesses,East,Retail,scale-up,20000,90000
+Health Forward,Funding for digital health and diagnostics innovation,All,Healthcare,growth-stage,60000,160000
+Smart Transport Boost,Support for EV and smart transport startups,West,Transport,scale-up,80000,200000
+EduBridge Scheme,Funds for edtech and learning platforms,North,Education,early-stage,30000,80000
+AgriNext,Modern agriculture and agri-tech funding support,South,Agriculture,growth-stage,40000,130000
+Women in Tech,Dedicated scheme for female founders in tech,East,Technology,early-stage,45000,100000
+Rural FinTech Inclusion,Fintech solutions for rural and low-income regions,All,Finance,early-stage,35000,95000
+Defense Innovators Program,Funding defense-tech innovations and R&D,North,Defense,scale-up,100000,250000
+AI Spark,Seed fund for AI and ML startups,All,Technology,early-stage,50000,150000
+Tourism Revival Grant,Help tourism companies hit by economic slowdown,South,Tourism,growth-stage,20000,85000
+Craft & Handloom Boost,Funds for rural artisans and handmade industries,East,Manufacturing,early-stage,15000,50000

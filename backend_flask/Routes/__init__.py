@@ -4,6 +4,7 @@ from .voicechat_routes import voicechat_blueprint
 from .investment_adv_routes import investment_adv_blueprint
 from .user_routes import user_blueprint
 from .textchat_routes import textchat_blueprint
+from .ai_ml_routes import ai_ml_blueprint
 
 def register_blueprints(app):
     app.register_blueprint(tts_blueprint, url_prefix="/api/tts")
@@ -13,3 +14,5 @@ def register_blueprints(app):
 
     app.register_blueprint(investment_adv_blueprint, url_prefix="/api/investment_adv")
     app.register_blueprint(user_blueprint, url_prefix="/api/user")
+
+    app.register_blueprint(ai_ml_blueprint, url_prefix="/api/ai_ml")

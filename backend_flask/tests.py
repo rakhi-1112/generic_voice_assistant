@@ -2,6 +2,7 @@ from SpeechToText.speech_to_text_whisper import SpeechToTextWhisper
 from SettingsManager.settings_manager import SettingsManager
 from TextToSpeech.text_to_speech_gtts import TextToSpeechGTTS
 from LanguageModel.language_model import LanguageModel
+from ml_models.budget_recommender import match_funding
 
 from word2num import word2num
 from spacy import load
@@ -43,9 +44,11 @@ def test_language_model_chat(settings_manager):
 def main():
     settings_manager = SettingsManager()
 
-    doc = nlp("forty five thousand umm")
-    numerized = doc._.numerize()
-    print(list(numerized.values())[0])
+    print(match_funding("Agriculture", 190000))
+
+    # doc = nlp("forty five thousand umm")
+    # numerized = doc._.numerize()
+    # print(list(numerized.values())[0])
 
     # input_path = 'SampleAudioFiles\\Prompt1.m4a'
     # output_path = 'OutputPath\\output1.mp3'
