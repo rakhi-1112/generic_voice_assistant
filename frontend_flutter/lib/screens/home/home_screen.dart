@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_flutter/screens/chat_screen/chat_screen.dart';
 import 'package:frontend_flutter/screens/investment_options/age_based/age_based_onboarding_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../settings/settings_screen.dart';
@@ -8,6 +9,9 @@ import '../text_chat/text_chat_screen.dart';
 import '../financial_toolkit/financial_toolkit_menu.dart';
 import '../investment_tracker/investment_tracker_screen.dart';
 import '../gamification/money_quest_game_screen.dart';
+import '../home/login_screen.dart'; // For reference if needed
+import 'package:frontend_flutter/config/translated_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -35,100 +39,127 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
       appBar: AppBar(
-        title: const Text("Home"),
+        title: const TranslatedText("Home"),
         backgroundColor: Colors.white,
         elevation: 1,
         foregroundColor: Colors.black,
       ),
       drawer: const AppSidebar(),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Welcome 👋", style: GoogleFonts.poppins(fontSize: 28, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 20),
-            Expanded(
-              child: Wrap(
-                spacing: 20,
-                runSpacing: 20,
-                children: [
-                  HomeCard(
-                    title: "📈 Your Investment Action Plan",
-                    description: "Explore smart plans",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => InvestmentOptionsScreen()),
-                      );
-                    },
-                    style: cardStyle,
-                    textStyle: textStyle,
-                  ),
-                  HomeCard(
-                    title: "📈 AI Powered Financial Coach",
-                    description: "Age-smart agent that adapts to your generation's unique money style",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => AgeBasedOnboardingScreen(onComplete: (Map<String, dynamic> data) {  },)),
-                      );
-                    },
-                    style: cardStyle,
-                    textStyle: textStyle,
-                  ),
-                  HomeCard(
-                    title: "🧰 SME Toolkit",
-                    description: "Manage and grow your business",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const FinancialToolkitMenu()),
-                      );
-                    },
-                    style: cardStyle,
-                    textStyle: textStyle,
-                  ),
-                  HomeCard(
-                    title: "🎙️ Chat with dolFin",
-                    description: "Get instant money advice",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const VoiceChatScreen()),
-                      );
-                    },
-                    style: cardStyle,
-                    textStyle: textStyle,
-                  ),
-                  HomeCard(
-                    title: "📈 Gameification",
-                    description: "Financial literacy through fun",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => AgeBasedOnboardingScreen(onComplete: (Map<String, dynamic> data) {  },)),
-                      );
-                    },
-                    style: cardStyle,
-                    textStyle: textStyle,
-                  ),
-                  HomeCard(
-                    title: "📈 Tracker",
-                    description: "Track your financial journey",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => AgeBasedOnboardingScreen(onComplete: (Map<String, dynamic> data) {  },)),
-                      );
-                    },
-                    style: cardStyle,
-                    textStyle: textStyle,
-                  ),
-                ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Welcome 👋",
+                style: GoogleFonts.poppins(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return Wrap(
+                    spacing: 20,
+                    runSpacing: 20,
+                    children: [
+                      HomeCard(
+                        title: "📈 Your Investment Action Plan",
+                        description: "Explore smart plans",
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => InvestmentOptionsScreen()),
+                          );
+                        },
+                        style: cardStyle,
+                        textStyle: textStyle,
+                      ),
+                      HomeCard(
+                        title: "📈 AI Powered Financial Coach",
+                        description: "Age-smart agent that adapts to your generation's unique money style",
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => AgeBasedOnboardingScreen(
+                                                                onComplete: (Map<String, dynamic> data) {
+                                                                  // Show snackbar
+                                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                                    SnackBar(
+                                                                      content: const Text("Data saved successfully ✅"),
+                                                                      backgroundColor: Colors.green,
+                                                                      duration: const Duration(seconds: 2),
+                                                                    ),
+                                                                  );
+
+                                                                  // Delay briefly to allow user to see the snackbar before navigating
+                                                                  Future.delayed(const Duration(seconds: 2), () {
+                                                                    Navigator.of(context).popUntil((route) => route.isFirst); // Go back to home screen
+                                                                  });
+                                                                },
+                                                              )),
+                          );
+                        },
+                        style: cardStyle,
+                        textStyle: textStyle,
+                      ),
+                      HomeCard(
+                        title: "🧰 SME Toolkit",
+                        description: "Manage and grow your business",
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const FinancialToolkitMenu()),
+                          );
+                        },
+                        style: cardStyle,
+                        textStyle: textStyle,
+                      ),
+                      HomeCard(
+                        title: "🎙️ Chat with dolFin",
+                        description: "Get instant money advice",
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const ChatScreen()),
+                          );
+                        },
+                        style: cardStyle,
+                        textStyle: textStyle,
+                      ),
+                      HomeCard(
+                        title: "📈 Gameification",
+                        description: "Financial literacy through fun",
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => MoneyQuestGameScreen()),
+                          );
+                        },
+                        style: cardStyle,
+                        textStyle: textStyle,
+                      ),
+                      HomeCard(
+                        title: "📈 Tracker",
+                        description: "Track your financial journey",
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const InvestmentTrackerScreen()),
+                          );
+                        },
+                        style: cardStyle,
+                        textStyle: textStyle,
+                      ),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
@@ -184,16 +215,16 @@ class AppSidebar extends StatelessWidget {
         children: [
           const DrawerHeader(
             decoration: BoxDecoration(color: Colors.blue),
-            child: Text("Sidebar Menu", style: TextStyle(color: Colors.white)),
+            child: TranslatedText("Menu", style: TextStyle(color: Colors.white)),
           ),
           ListTile(
             leading: const Icon(Icons.home),
-            title: const Text("Home"),
+            title: const TranslatedText("Home"),
             onTap: () => Navigator.of(context).pop(),
           ),
           ListTile(
             leading: const Icon(Icons.settings),
-            title: const Text("Settings"),
+            title: const TranslatedText("Settings"),
             onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SettingsScreen())),
           ),
           ListTile(
@@ -215,7 +246,6 @@ class AppSidebar extends StatelessWidget {
               ));
             },
           ),
-
          ListTile(
           leading: const Icon(Icons.videogame_asset),
           title: const Text("Money Quest Game"),
@@ -225,7 +255,21 @@ class AppSidebar extends StatelessWidget {
             ));
           },
         ),
+        const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const TranslatedText("Logout"),
+              onTap: () async {
+                Navigator.of(context).pop();
 
+                await FirebaseAuth.instance.signOut();
+
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/login',
+                  (route) => false,
+                );
+              },
+            ),
         ],
       ),
     );

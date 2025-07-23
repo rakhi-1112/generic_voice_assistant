@@ -12,7 +12,7 @@ class FinancialToolkitMenu extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("🧰 SME Financial Toolkit"),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.blue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -29,7 +29,7 @@ class FinancialToolkitMenu extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               elevation: 4,
               child: ListTile(
-                leading: const Icon(Icons.pie_chart, color: Colors.green),
+                leading: const Icon(Icons.pie_chart, color: Colors.indigo),
                 title: const Text("📊 Smart Budgeting Tool"),
                 subtitle: const Text("Track, analyze and get AI tips on your expenses."),
                 onTap: () {
@@ -44,7 +44,7 @@ class FinancialToolkitMenu extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               elevation: 4,
               child: ListTile(
-                leading: const Icon(Icons.account_balance_wallet_outlined, color: Colors.green),
+                leading: const Icon(Icons.account_balance_wallet_outlined, color: Colors.indigo),
                 title: const Text("💰 Funding Explorer"),
                 subtitle: const Text("Get matched with local SME schemes and loans."),
                 onTap: () {
@@ -59,7 +59,7 @@ class FinancialToolkitMenu extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               elevation: 4,
               child: ListTile(
-                leading: const Icon(Icons.bar_chart, color: Colors.green),
+                leading: const Icon(Icons.bar_chart, color: Colors.indigo),
                 title: const Text("📅 Growth Planner"),
                 subtitle: const Text("Set goals and use forecasting for better decisions."),
                 onTap: () {

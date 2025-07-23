@@ -310,6 +310,7 @@ Widget _buildRiskSlider() {
         );
         setState(() {
           _formSaved = true;
+          print("set formsaved");
         });
       } else {
         _showError(result["error"] ?? "Submission failed");

@@ -108,7 +108,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
 
       // Save response to file
       final bytes = await response.stream.toBytes();
-      Directory downloadsDir = Directory('/storage/emulated/0/Download'); 
+      final downloadsDir = await getApplicationDocumentsDirectory();
       final outputPath = '${downloadsDir.path}/api_response_temp.mp3';
       await File(outputPath).writeAsBytes(bytes);
       
@@ -126,7 +126,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
 
   Future<void> _playResponse(String path) async {
     try {
-      Directory downloadsDir = Directory('/storage/emulated/0/Download'); 
+      final downloadsDir = await getApplicationDocumentsDirectory();
       final outputPath = '${downloadsDir.path}/api_response_temp.mp3';
       await _player.play(audioplayers2.DeviceFileSource(outputPath));
       
