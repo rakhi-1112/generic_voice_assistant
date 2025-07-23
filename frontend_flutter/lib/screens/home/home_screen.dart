@@ -64,8 +64,8 @@ class HomeScreen extends StatelessWidget {
                     textStyle: textStyle,
                   ),
                   HomeCard(
-                    title: "📈 AI Powered Hyper-personalised Financial Coach",
-                    description: "Your age-smart financial coach that adapts to your generation's unique money style",
+                    title: "📈 AI Powered Financial Coach",
+                    description: "Age-smart agent that adapts to your generation's unique money style",
                     onTap: () {
                       Navigator.push(
                         context,
@@ -94,6 +94,30 @@ class HomeScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) => const VoiceChatScreen()),
+                      );
+                    },
+                    style: cardStyle,
+                    textStyle: textStyle,
+                  ),
+                  HomeCard(
+                    title: "📈 Gameification",
+                    description: "Financial literacy through fun",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => AgeBasedOnboardingScreen(onComplete: (Map<String, dynamic> data) {  },)),
+                      );
+                    },
+                    style: cardStyle,
+                    textStyle: textStyle,
+                  ),
+                  HomeCard(
+                    title: "📈 Tracker",
+                    description: "Track your financial journey",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => AgeBasedOnboardingScreen(onComplete: (Map<String, dynamic> data) {  },)),
                       );
                     },
                     style: cardStyle,
