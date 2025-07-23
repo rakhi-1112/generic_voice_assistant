@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
@@ -27,7 +28,7 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
   final TextEditingController _investmentAmountController = TextEditingController();
   final TextEditingController _regionController = TextEditingController();
 
-
+// todo: remove region controller
 
   String _investmentFrequency = 'Recurring';
   String _username = '';
@@ -289,6 +290,10 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
           controller: controller,
           keyboardType: isNumber ? TextInputType.number : TextInputType.text,
           validator: validator,
+          style: GoogleFonts.poppins(
+            fontSize: 15,
+            color: Colors.black87,
+          ),
         ),
         const SizedBox(height: 16),
       ],
@@ -305,82 +310,157 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Investment Options")),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              if (_username.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Text("Hello, $_username", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                ),
-              _buildFieldWithSpeech(
-                label: "Age Group (0 to 150)",
-                controller: _ageGroupController,
-                isNumber: true,
-                validator: (v) {
-                  final val = int.tryParse(v ?? "");
-                  return (val == null || val < 0 || val > 150) ? "Enter a valid age (0–150)" : null;
-                },
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: Colors.white,
+    appBar: AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      title: Text(
+        'Investment Options',
+        style: GoogleFonts.poppins(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+      ),
+      centerTitle: true,
+    ),
+    body: Stack(
+      children: [
+        Positioned.fill(
+          child: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.white, Color(0xFFE3F2FD)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
-              DropdownButtonFormField<String>(
-                value: _investmentFrequency,
-                decoration: const InputDecoration(labelText: "Investment Frequency"),
-                items: const [
-                  DropdownMenuItem(value: "Recurring", child: Text("Recurring")),
-                  DropdownMenuItem(value: "Lumpsum", child: Text("Lumpsum")),
-                ],
-                onChanged: (val) => setState(() => _investmentFrequency = val!),
-              ),
-              const SizedBox(height: 16),
-              _buildFieldWithSpeech(
-                label: "Investment Goal",
-                controller: _investmentGoalController,
-                isNumber: true,
-                validator: (v) => double.tryParse(v ?? "") == null ? "Enter a number" : null,
-              ),
-              _buildFieldWithSpeech(
-                label: "Investment Risk (0–100)",
-                controller: _investmentRiskController,
-                isNumber: true,
-                validator: (v) {
-                  final val = double.tryParse(v ?? "");
-                  return (val == null || val < 0 || val > 100) ? "Risk must be 0 to 100" : null;
-                },
-              ),
-              _buildFieldWithSpeech(
-                label: "Investment Amount",
-                controller: _investmentAmountController,
-                isNumber: true,
-                validator: (v) => double.tryParse(v ?? "") == null ? "Enter a number" : null,
-              ),
-                _buildFieldWithSpeech(
-                label: "Region",
-                controller: _regionController,
-                validator: (v) => (v == null || v.isEmpty) ? "Enter Region" : null,
-              ),
-              const SizedBox(height: 30),
-              ElevatedButton(onPressed: _submitForm, child: const Text("Save")),
-              if (_formSaved)
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: ElevatedButton(
-                  onPressed: _generateStrategy,
-                  child: const Text("Generate Investment Strategy"),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
-    );
-  }
-
+        Center(
+          child: GlassmorphicContainer(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.88,
+            borderRadius: 20,
+            blur: 20,
+            alignment: Alignment.center,
+            border: 1,
+            linearGradient: LinearGradient(
+              colors: [
+                Colors.white.withOpacity(0.2),
+                Colors.blue.withOpacity(0.1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderGradient: LinearGradient(
+              colors: [
+                Colors.white.withOpacity(0.4),
+                Colors.blue.withOpacity(0.4),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: [
+                    if (_username.isNotEmpty)
+                      Text(
+                        "Welcome, $_username!",
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF0A3D91),
+                        ),
+                      ).animate().fade(duration: 400.ms).slideY(),
+                    const SizedBox(height: 20),
+                    _buildFieldWithSpeech(
+                      label: "Age Group (0 to 150)",
+                      controller: _ageGroupController,
+                      isNumber: true,
+                      validator: (v) {
+                        final val = int.tryParse(v ?? "");
+                        return (val == null || val < 0 || val > 150) ? "Enter a valid age (0–150)" : null;
+                      },
+                    ),
+                    DropdownButtonFormField<String>(
+                      value: _investmentFrequency,
+                      decoration: const InputDecoration(
+                        labelText: "Investment Frequency",
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF0A3D91), width: 2),
+                        ),
+                      ),
+                      items: const [
+                        DropdownMenuItem(value: "Recurring", child: Text("Recurring")),
+                        DropdownMenuItem(value: "Lumpsum", child: Text("Lumpsum")),
+                      ],
+                      onChanged: (val) => setState(() => _investmentFrequency = val!),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildFieldWithSpeech(
+                      label: "Investment Goal",
+                      controller: _investmentGoalController,
+                      isNumber: true,
+                      validator: (v) => double.tryParse(v ?? "") == null ? "Enter a number" : null,
+                    ),
+                    _buildFieldWithSpeech(
+                      label: "Investment Risk (0–100)",
+                      controller: _investmentRiskController,
+                      isNumber: true,
+                      validator: (v) {
+                        final val = double.tryParse(v ?? "");
+                        return (val == null || val < 0 || val > 100) ? "Risk must be 0 to 100" : null;
+                      },
+                    ),
+                    _buildFieldWithSpeech(
+                      label: "Investment Amount",
+                      controller: _investmentAmountController,
+                      isNumber: true,
+                      validator: (v) => double.tryParse(v ?? "") == null ? "Enter a number" : null,
+                    ),
+                    _buildFieldWithSpeech(
+                      label: "Region",
+                      controller: _regionController,
+                      validator: (v) => (v == null || v.isEmpty) ? "Enter Region" : null,
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: _submitForm,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF0A3D91),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        textStyle: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                      child: const Text("Save", style: TextStyle(fontSize: 16, color: Colors.white)),
+                    ).animate().fade(duration: 600.ms).slideY(),
+                    if (_formSaved)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: ElevatedButton(
+                          onPressed: _generateStrategy,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF1565C0),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          child: const Text("Generate Investment Strategy", style: TextStyle(color: Colors.white)),
+                        ).animate().fadeIn().slideY(begin: 0.3),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
 
 }
