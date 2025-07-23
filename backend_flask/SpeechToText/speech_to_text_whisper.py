@@ -18,8 +18,8 @@ class SpeechToTextWhisper():
         self.converted_text = ''
 
         self.__device = 'cpu'
-        if torch.cuda.is_available() and self.__model_type in ['tiny', 'base', 'small']:
-            self.__device = 'cuda'
+        # if torch.cuda.is_available() and self.__model_type in ['tiny', 'base', 'small']:
+        #     self.__device = 'cuda'
             
         # TODO: Exception Handling
         self.__model = whisper.load_model(self.__model_type, device=self.__device)
