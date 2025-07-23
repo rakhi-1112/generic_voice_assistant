@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:frontend_flutter/screens/investment_options/age_based/utils/age_group_engine.dart';
@@ -11,10 +12,23 @@ class AgeBasedOnboardingScreen extends StatefulWidget {
   State<AgeBasedOnboardingScreen> createState() => _AgeBasedOnboardingScreenState();
 }
 
-class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> {
+class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> with SingleTickerProviderStateMixin {
   int currentStep = 0;
   AgeGroup? ageGroup;
   Map<String, dynamic> onboardingData = {};
+  late AnimationController _blobController;
+
+  @override
+  void initState() {
+    super.initState();
+    _blobController = AnimationController(vsync: this, duration: const Duration(seconds: 10))..repeat();
+  }
+
+  @override
+  void dispose() {
+    _blobController.dispose();
+    super.dispose();
+  }
 
   void handleAgeSelect(int age) {
     ageGroup = assignAgeGroup(age) as AgeGroup?;
@@ -39,40 +53,79 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFF3E5F5), Color(0xFFE1F5FE)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      body: Stack(
+        children: [
+          _buildAnimatedBlobBackground(),
+          Center(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 600),
+              transitionBuilder: (child, animation) => SlideTransition(
+                position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero).animate(animation),
+                child: FadeTransition(opacity: animation, child: child),
+              ),
+              child: _buildStepContent(key: ValueKey(currentStep)),
+            ),
           ),
-        ),
-        child: Center(
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 500),
-            child: _buildStepContent(),
-          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAnimatedBlobBackground() {
+    return AnimatedBuilder(
+      animation: _blobController,
+      builder: (context, child) {
+        return Stack(
+          children: [
+            _animatedBlob(Colors.purple.shade100, 80, 0),
+            _animatedBlob(Colors.yellow.shade100, 200, 2),
+            _animatedBlob(Colors.pink.shade100, 350, 4),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _animatedBlob(Color color, double offset, int delaySeconds) {
+    final angle = _blobController.value * 2 * pi + delaySeconds;
+    return Positioned(
+      top: 200 + 50 * sin(angle),
+      left: offset + 30 * cos(angle),
+      child: Container(
+        width: 200,
+        height: 200,
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.2),
+          shape: BoxShape.circle,
         ),
       ),
     );
   }
 
-  Widget _buildStepContent() {
+  Widget _buildStepContent({required Key key}) {
     switch (currentStep) {
       case 0:
         return Column(
+          key: key,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("🐬", style: TextStyle(fontSize: 80)).animate().fade().scale(),
+            const Text("🐬", style: TextStyle(fontSize: 80))
+                .animate()
+                .fade(duration: 600.ms)
+                .scale(duration: 800.ms)
+                .then()
+                .shake(hz: 1, curve: Curves.easeOut),
             const SizedBox(height: 20),
-            const Text("dolFin", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold)),
+            const Text("dolFin", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold))
+                .animate()
+                .fadeIn(duration: 600.ms, delay: 400.ms),
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
               child: Text(
                 "Your age-smart financial coach that adapts to your generation's money style",
                 textAlign: TextAlign.center,
               ),
-            ),
+            ).animate().fadeIn(delay: 600.ms),
             const SizedBox(height: 30),
             Wrap(
               spacing: 16,
@@ -82,14 +135,14 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> {
                 _ageCard('Gen Z', '🎓', '18-27', 22),
                 _ageCard('Millennial', '💼', '28-43', 35),
                 _ageCard('Experienced', '🏡', '44+', 50),
-              ],
+              ].animate(interval: 300.ms),
             ),
           ],
         );
       case 1:
-        return _buildFinancialSituationStep();
+        return _buildFinancialSituationStep().animate().fadeIn().slideY(begin: 0.2);
       case 2:
-        return _buildPrimaryGoalStep();
+        return _buildPrimaryGoalStep().animate().fadeIn().slideY(begin: 0.2);
       default:
         return const SizedBox();
     }
@@ -104,10 +157,21 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
           gradient: const LinearGradient(colors: [Colors.purple, Colors.orange]),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.deepPurple.withOpacity(0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 6),
+            )
+          ],
         ),
         child: Column(
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 40)),
+            Text(emoji, style: const TextStyle(fontSize: 40))
+                .animate()
+                .scaleXY(begin: 1, end: 1.2)
+                .then(delay: 200.ms)
+                .shake(hz: 2),
             const SizedBox(height: 10),
             Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
             Text(range),
@@ -184,7 +248,7 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> {
             child: ElevatedButton(
               onPressed: nextStep,
               child: const Text("Continue ✨"),
-            ),
+            ).animate().scale().fadeIn(),
           ),
       ],
     );
@@ -236,7 +300,7 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> {
                 ],
               ),
             ),
-          );
+          ).animate().fadeIn();
         }).toList(),
         if (onboardingData['primaryGoal'] != null)
           Padding(
@@ -244,7 +308,7 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> {
             child: ElevatedButton(
               onPressed: nextStep,
               child: const Text("Create My Action Plan! 🔥"),
-            ),
+            ).animate().scale().fadeIn(),
           ),
       ],
     );

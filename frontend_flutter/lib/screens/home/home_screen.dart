@@ -52,8 +52,20 @@ class HomeScreen extends StatelessWidget {
                 runSpacing: 20,
                 children: [
                   HomeCard(
-                    title: "📈 Investment Options",
+                    title: "📈 Your Investment Action Plan",
                     description: "Explore smart plans",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => InvestmentOptionsScreen()),
+                      );
+                    },
+                    style: cardStyle,
+                    textStyle: textStyle,
+                  ),
+                  HomeCard(
+                    title: "📈 AI Powered Hyper-personalised Financial Coach",
+                    description: "Your age-smart financial coach that adapts to your generation's unique money style",
                     onTap: () {
                       Navigator.push(
                         context,
@@ -76,8 +88,8 @@ class HomeScreen extends StatelessWidget {
                     textStyle: textStyle,
                   ),
                   HomeCard(
-                    title: "🎙️ Voice Assistant",
-                    description: "Ask your AI advisor",
+                    title: "🎙️ Chat with dolFin",
+                    description: "Get instant money advice",
                     onTap: () {
                       Navigator.push(
                         context,
