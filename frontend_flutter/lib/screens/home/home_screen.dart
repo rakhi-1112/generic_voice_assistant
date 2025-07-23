@@ -102,7 +102,7 @@ class HomeScreen extends StatelessWidget {
                     textStyle: textStyle,
                   ),
                   HomeCard(
-                    title: "📈 Gameification",
+                    title: "📈 Gamification",
                     description: "Financial literacy through fun",
                     onTap: () {
                       Navigator.push(
