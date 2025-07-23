@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../api/toolkit_api.dart';
 
 class FundingScreen extends StatefulWidget {
@@ -51,22 +52,54 @@ class _FundingScreenState extends State<FundingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Colors.blue.shade800;
+
     return Scaffold(
-      appBar: AppBar(title: const Text("💰 Funding Opportunities")),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: primaryColor,
+        title: Text(
+          "💰 Funding Opportunities",
+          style: GoogleFonts.poppins(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 1,
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Select Business Sector"),
-            DropdownButton<String>(
-              isExpanded: true,
+            Text("Select Business Sector", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<String>(
               value: selectedSector,
-              hint: const Text("Choose a sector"),
+              isExpanded: true,
+              icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Colors.blue),
+              decoration: InputDecoration(
+                labelText: "Choose a sector",
+                labelStyle: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.blue.shade900,
+                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+              style: GoogleFonts.poppins(fontSize: 14, color: Colors.black87),
+              dropdownColor: Colors.white,
               items: sectors.map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value),
+                  child: Text(
+                    value,
+                    style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500),
+                  ),
                 );
               }).toList(),
               onChanged: (value) {
@@ -75,65 +108,100 @@ class _FundingScreenState extends State<FundingScreen> {
                 });
               },
             ),
+
             if (selectedSector == 'Other') ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               TextField(
                 controller: otherSectorController,
-                decoration: const InputDecoration(
+                style: GoogleFonts.poppins(fontSize: 14),
+                decoration: InputDecoration(
                   labelText: "Enter your custom sector",
+                  labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
               ),
             ],
+
             const SizedBox(height: 16),
             TextField(
               controller: amountController,
-              decoration: const InputDecoration(labelText: "Funding Amount Needed"),
+              style: GoogleFonts.poppins(fontSize: 14),
               keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: "Funding Amount Needed",
+                labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
             ),
-            const SizedBox(height: 16),
-            ElevatedButton(
+
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.search),
               onPressed: _matchFunding,
-              child: const Text("Find Funding Options"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              label: Text(
+                "Find Funding Options",
+                style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 16),
+              ),
             ),
-            const SizedBox(height: 16),
+
+            const SizedBox(height: 24),
             Expanded(
-              child: fundingInfo is String || (fundingInfo is List && fundingInfo.isEmpty)
-                  ? const Center(child: Text("No matches found"))
+              child: fundingInfo.isEmpty
+                  ? Center(
+                      child: Text("No matches found", style: GoogleFonts.poppins()),
+                    )
                   : ListView.builder(
                       itemCount: fundingInfo.length,
                       itemBuilder: (context, index) {
                         final item = fundingInfo[index];
                         return Card(
-                          elevation: 4,
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           margin: const EdgeInsets.symmetric(vertical: 8),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           child: Padding(
-                            padding: const EdgeInsets.all(12),
+                            padding: const EdgeInsets.all(16),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(item['name'] ?? '',
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                                const SizedBox(height: 6),
-                                Text(item['description'] ?? '',
-                                    style: const TextStyle(fontSize: 14)),
-                                const SizedBox(height: 6),
+                                Text(
+                                  item['name'] ?? 'Untitled Program',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                    color: primaryColor,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  item['description'] ?? 'No description available.',
+                                  style: GoogleFonts.poppins(fontSize: 14),
+                                ),
+                                const SizedBox(height: 12),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text("Industry: ${item['industry'] ?? 'N/A'}"),
-                                    Text("Region: ${item['region'] ?? 'N/A'}"),
+                                    Text("Industry: ${item['industry'] ?? 'N/A'}",
+                                        style: GoogleFonts.poppins(fontSize: 13)),
+                                    Text("Region: ${item['region'] ?? 'N/A'}",
+                                        style: GoogleFonts.poppins(fontSize: 13)),
                                   ],
                                 ),
                                 const SizedBox(height: 4),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text("Eligibility: ${item['eligibility'] ?? 'N/A'}"),
-                                    Text("Funding: ₹${item['funding_min']} – ₹${item['funding_max']}"),
+                                    Text("Eligibility: ${item['eligibility'] ?? 'N/A'}",
+                                        style: GoogleFonts.poppins(fontSize: 13)),
+                                    Text(
+                                      "Funding: ₹${item['funding_min']} – ₹${item['funding_max']}",
+                                      style: GoogleFonts.poppins(fontSize: 13),
+                                    ),
                                   ],
                                 ),
                               ],
