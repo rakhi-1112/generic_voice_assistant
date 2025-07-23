@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_flutter/screens/investment_options/age_based/age_based_onboarding_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../settings/settings_screen.dart';
 import '../voice_chat/voice_chat_screen.dart';
@@ -56,7 +57,7 @@ class HomeScreen extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const InvestmentOptionsScreen()),
+                        MaterialPageRoute(builder: (_) => AgeBasedOnboardingScreen(onComplete: (Map<String, dynamic> data) {  },)),
                       );
                     },
                     style: cardStyle,
