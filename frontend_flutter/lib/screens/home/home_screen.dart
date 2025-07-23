@@ -4,6 +4,8 @@ import '../voice_chat/voice_chat_screen.dart';
 import '../investment_options/investment_options_screen.dart';
 import '../text_chat/text_chat_screen.dart';
 import '../financial_toolkit/financial_toolkit_menu.dart';
+import '../investment_tracker/investment_tracker_screen.dart';
+import '../gamification/money_quest_game_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -110,6 +112,26 @@ class AppSidebar extends StatelessWidget {
               ));
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.bar_chart), // Tracker icon
+            title: const Text("Investment Tracker"),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const InvestmentTrackerScreen(),
+              ));
+            },
+          ),
+
+         ListTile(
+          leading: const Icon(Icons.videogame_asset),
+          title: const Text("Money Quest Game"),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const MoneyQuestGameScreen(),
+            ));
+          },
+        ),
+
         ],
       ),
     );

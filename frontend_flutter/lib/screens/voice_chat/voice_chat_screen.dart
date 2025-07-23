@@ -221,7 +221,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
                 label: const Text('PLAY RESPONSE', style: TextStyle(fontSize: 18)),
                 onPressed: () => _playResponse(_apiResponsePath!),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
+                  backgroundColor: const Color.fromARGB(255, 76, 155, 175),
                   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                 ),
               ),
