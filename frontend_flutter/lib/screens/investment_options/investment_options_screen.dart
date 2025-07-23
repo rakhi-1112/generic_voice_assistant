@@ -261,46 +261,65 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
     }
   }
 
-  Widget _buildFieldWithSpeech({
-    required String label,
-    required TextEditingController controller,
-    required String? Function(String?) validator,
-    bool isNumber = false,
-  }) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold))),
-            IconButton(icon: const Icon(Icons.volume_up), onPressed: () => speak(label)),
-            IconButton(
-              icon: Icon(_isRecording ? Icons.mic_off : Icons.mic),
-              onPressed: () async {
-                if (!_isRecording) {
-                  await startRecording();
-                } else {
-                  final transcript = await stopRecordingAndTranscribe(isNumeric: isNumber);
-                  if (transcript != null) controller.text = transcript;
-                }
-              },
-            )
-          ],
-        ),
-        TextFormField(
-          controller: controller,
-          keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-          validator: validator,
-          style: GoogleFonts.poppins(
-            fontSize: 15,
-            color: Colors.black87,
+Widget _buildFieldWithSpeech({
+  required String label,
+  required TextEditingController controller,
+  required String? Function(String?) validator,
+  bool isNumber = false,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.blue.shade900,
+              ),
+            ),
           ),
+          IconButton(
+            icon: const Icon(Icons.volume_up),
+            onPressed: () => speak(label),
+          ),
+          IconButton(
+            icon: Icon(_isRecording ? Icons.mic_off : Icons.mic),
+            onPressed: () async {
+              if (!_isRecording) {
+                await startRecording();
+              } else {
+                final transcript = await stopRecordingAndTranscribe(isNumeric: isNumber);
+                if (transcript != null) controller.text = transcript;
+              }
+            },
+          )
+        ],
+      ),
+      TextFormField(
+        controller: controller,
+        keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+        validator: validator,
+        style: GoogleFonts.poppins(
+          fontSize: 15,
+          color: Colors.black87,
         ),
-        const SizedBox(height: 16),
-      ],
-    );
-  }
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          filled: true,
+          fillColor: Colors.white,
+        ),
+      ),
+      const SizedBox(height: 16),
+    ],
+  );
+}
 
-  void _showLoadingDialog() {
+ void _showLoadingDialog() {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -398,9 +417,23 @@ Widget build(BuildContext context) {
                         labelStyle: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Colors.black87,
+                          color: Colors.blue.shade900,
                         ),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.blueGrey),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.blueGrey),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.blue.shade700, width: 2),
+                        ),
                       ),
                       items: [
                         DropdownMenuItem(
