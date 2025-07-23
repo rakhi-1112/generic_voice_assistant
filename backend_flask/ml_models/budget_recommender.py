@@ -7,7 +7,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-# Budget Suggestion using Rule-Based AI Logic
+# 🧠 Budget Suggestion using Rule-Based AI Logic
 def recommend_budget(data):
     income = data.get("income", 0)
     expenses = dict(data.get("expense", {}))
@@ -32,7 +32,7 @@ def recommend_budget(data):
     return {"status": "ok", "suggestions": suggestions or ["✅ Budget looks healthy."]}
 
 
-#ML-based Funding Scheme Matching using Fuzzy Rules
+# 🤖 ML-based Funding Scheme Matching using Fuzzy Rules
 # def match_funding(data):
 #     region = data.get("region", "").lower()
 #     industry = data.get("industry", "").lower()
@@ -93,7 +93,7 @@ def match_funding(business_sector: str, funding_amount: int):
     return {"matches": matches}
 
 
-# Prophet Forecasting: Future Revenue/Expense Prediction
+# 📈 Prophet Forecasting: Future Revenue/Expense Prediction
 def forecast_cashflow(data):
     df = pd.DataFrame(data["history"])  # expects [{"ds": "2024-06-01", "y": 10000}, ...]
 
@@ -111,7 +111,7 @@ def forecast_cashflow(data):
     }
 
 
-
+# 🧠 Extra: Predict Future Income/Expense with Linear Regression (fallback)
 def simple_linear_forecast(history):
     df = pd.DataFrame(history)
     df["t"] = np.arange(len(df)).reshape(-1, 1)
