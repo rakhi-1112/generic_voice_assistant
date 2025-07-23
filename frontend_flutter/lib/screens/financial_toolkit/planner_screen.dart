@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../api/toolkit_api.dart';
 
@@ -29,23 +30,47 @@ class _PlannerScreenState extends State<PlannerScreen> {
     });
   }
 
-  Future<void> _selectDate(int index) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: history[index]["ds"],
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
+Future<void> _selectDate(int index) async {
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: history[index]["ds"],
+    firstDate: DateTime(2000),
+    lastDate: DateTime(2100),
+    builder: (context, child) {
+      return Theme(
+        data: ThemeData(
+          colorScheme: ColorScheme.light(
+            primary: Colors.blue.shade800, // header & active date color
+            onPrimary: Colors.white,       // text color on primary
+            surface: Colors.white,         // calendar background
+            onSurface: Colors.black87,     // default text
+          ),
+          dialogBackgroundColor: Colors.white,
+          textTheme: GoogleFonts.poppinsTextTheme().copyWith(
+            titleMedium: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+            bodyLarge: GoogleFonts.poppins(),
+            bodyMedium: GoogleFonts.poppins(),
+          ),
+          dialogTheme: DialogThemeData(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+        ),
+        child: child!,
+      );
+    },
+  );
 
-    if (picked != null) {
-      setState(() {
-        history[index]["ds"] = picked;
-      });
-    }
+  if (picked != null) {
+    setState(() {
+      history[index]["ds"] = picked;
+    });
   }
+}
+
 
   void _getForecast() async {
-    // Format data as required
     final formatted = history
         .where((e) => e["y"] != null)
         .map((e) => {
@@ -69,16 +94,32 @@ class _PlannerScreenState extends State<PlannerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Colors.blue.shade800;
+
     return Scaffold(
-      appBar: AppBar(title: const Text("📈 Business Planner")),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: primaryColor,
+        title: Text(
+          "📈 Business Planner",
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 1,
+      ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Enter at least 6 months of historical data:"),
-            const SizedBox(height: 12),
-
+            Text(
+              "Enter at least 6 months of historical data:",
+              style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 16),
             ...history.asMap().entries.map((entry) {
               final index = entry.key;
               final item = entry.value;
@@ -92,8 +133,15 @@ class _PlannerScreenState extends State<PlannerScreen> {
                       child: InkWell(
                         onTap: () => _selectDate(index),
                         child: InputDecorator(
-                          decoration: const InputDecoration(labelText: "Date"),
-                          child: Text(DateFormat('yyyy-MM-dd').format(item["ds"])),
+                          decoration: InputDecoration(
+                            labelText: "Date",
+                            labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          child: Text(
+                            DateFormat('yyyy-MM-dd').format(item["ds"]),
+                            style: GoogleFonts.poppins(),
+                          ),
                         ),
                       ),
                     ),
@@ -102,7 +150,12 @@ class _PlannerScreenState extends State<PlannerScreen> {
                       flex: 2,
                       child: TextField(
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(labelText: "Amount"),
+                        decoration: InputDecoration(
+                          labelText: "Amount",
+                          labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        style: GoogleFonts.poppins(),
                         onChanged: (value) {
                           setState(() {
                             item["y"] = double.tryParse(value);
@@ -111,7 +164,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
+                      icon: const Icon(Icons.delete, color: Colors.redAccent),
                       onPressed: () => _removeRow(index),
                     ),
                   ],
@@ -119,52 +172,80 @@ class _PlannerScreenState extends State<PlannerScreen> {
               );
             }).toList(),
 
-            const SizedBox(height: 12),
-
-            Align(
-              alignment: Alignment.centerLeft,
-              child: IconButton(
-                icon: const Icon(Icons.add_circle, size: 32, color: Colors.green),
-                onPressed: _addRow,
-                tooltip: "Add Row",
+            const SizedBox(height: 8),
+            TextButton.icon(
+              onPressed: _addRow,
+              icon: const Icon(Icons.add_circle, color: Colors.green),
+              label: Text(
+                "Add Row",
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  color: Colors.green,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-
-            const SizedBox(height: 20),
-
-            Center(
-              child: ElevatedButton(
-                onPressed: _getForecast,
-                child: const Text("Generate Forecast"),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green.shade50,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
             ),
 
             const SizedBox(height: 24),
+            Center(
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.auto_graph),
+                onPressed: _getForecast,
+                label: Text(
+                  "Generate Forecast",
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 16),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+            ),
 
-            if (errorMessage != null) ...[
-              Text(errorMessage!, style: const TextStyle(color: Colors.red)),
-            ] else if (forecast.isNotEmpty) ...[
-              const Text(
+            const SizedBox(height: 24),
+            if (errorMessage != null)
+              Text(
+                errorMessage!,
+                style: GoogleFonts.poppins(color: Colors.red),
+              )
+            else if (forecast.isNotEmpty) ...[
+              Text(
                 "📊 Forecast for next 3 months:",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
               const SizedBox(height: 12),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
-                  columns: const [
-                    DataColumn(label: Text("Date")),
-                    DataColumn(label: Text("Projected Amount")),
+                  columns: [
+                    DataColumn(
+                      label: Text("Date", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                    ),
+                    DataColumn(
+                      label: Text("Projected Amount", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                    ),
                   ],
                   rows: forecast.map((entry) {
                     return DataRow(cells: [
-                      DataCell(Text(entry['ds'])),
-                      DataCell(Text("₹${entry['yhat'].toStringAsFixed(2)}")),
+                      DataCell(Text(entry['ds'], style: GoogleFonts.poppins())),
+                      DataCell(Text("₹${entry['yhat'].toStringAsFixed(2)}", style: GoogleFonts.poppins())),
                     ]);
                   }).toList(),
                 ),
               ),
-            ]
+            ],
           ],
         ),
       ),
