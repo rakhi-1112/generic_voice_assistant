@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
@@ -27,7 +28,7 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
   final TextEditingController _investmentAmountController = TextEditingController();
   final TextEditingController _regionController = TextEditingController();
 
-
+// todo: remove region controller
 
   String _investmentFrequency = 'Recurring';
   String _username = '';
@@ -215,6 +216,64 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
     }
   }
 
+  double _riskValue = 50; // Add this in your state
+
+Widget _buildRiskSlider() {
+  String getRiskCategory(double value) {
+    if (value <= 33) return "Low";
+    if (value <= 66) return "Medium";
+    return "High";
+  }
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        "How Much Risk % Can You Take? (0-100)",
+        style: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: Colors.blue.shade900,
+        ),
+      ),
+      const SizedBox(height: 8),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("Low", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
+          Text("Medium", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
+          Text("High", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
+        ],
+      ),
+      Slider(
+        value: _riskValue,
+        min: 0,
+        max: 100,
+        divisions: 100,
+        label: "${_riskValue.round()}%",
+        activeColor: Colors.blue.shade700,
+        inactiveColor: Colors.blue.shade100,
+        onChanged: (value) {
+          setState(() => _riskValue = value);
+          _investmentRiskController.text = _riskValue.toStringAsFixed(0); // sync to controller
+        },
+      ),
+      Align(
+        alignment: Alignment.centerRight,
+        child: Text(
+          "Selected: ${_riskValue.round()}% (${getRiskCategory(_riskValue)})",
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: Colors.black87,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+      const SizedBox(height: 16),
+    ],
+  );
+}
+
 
   Future<void> _submitForm() async {
     FocusScope.of(context).unfocus();
@@ -247,7 +306,7 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Investment submitted successfully!")),
+          const SnackBar(content: Text("Your preferences have been saved!")),
         );
         setState(() {
           _formSaved = true;
@@ -260,42 +319,65 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
     }
   }
 
-  Widget _buildFieldWithSpeech({
-    required String label,
-    required TextEditingController controller,
-    required String? Function(String?) validator,
-    bool isNumber = false,
-  }) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold))),
-            IconButton(icon: const Icon(Icons.volume_up), onPressed: () => speak(label)),
-            IconButton(
-              icon: Icon(_isRecording ? Icons.mic_off : Icons.mic),
-              onPressed: () async {
-                if (!_isRecording) {
-                  await startRecording();
-                } else {
-                  final transcript = await stopRecordingAndTranscribe(isNumeric: isNumber);
-                  if (transcript != null) controller.text = transcript;
-                }
-              },
-            )
-          ],
+Widget _buildFieldWithSpeech({
+  required String label,
+  required TextEditingController controller,
+  required String? Function(String?) validator,
+  bool isNumber = false,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.blue.shade900,
+              ),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.volume_up),
+            onPressed: () => speak(label),
+          ),
+          IconButton(
+            icon: Icon(_isRecording ? Icons.mic_off : Icons.mic),
+            onPressed: () async {
+              if (!_isRecording) {
+                await startRecording();
+              } else {
+                final transcript = await stopRecordingAndTranscribe(isNumeric: isNumber);
+                if (transcript != null) controller.text = transcript;
+              }
+            },
+          )
+        ],
+      ),
+      TextFormField(
+        controller: controller,
+        keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+        validator: validator,
+        style: GoogleFonts.poppins(
+          fontSize: 15,
+          color: Colors.black87,
         ),
-        TextFormField(
-          controller: controller,
-          keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-          validator: validator,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          filled: true,
+          fillColor: Colors.white,
         ),
-        const SizedBox(height: 16),
-      ],
-    );
-  }
+      ),
+      const SizedBox(height: 16),
+    ],
+  );
+}
 
-  void _showLoadingDialog() {
+ void _showLoadingDialog() {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -305,218 +387,171 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
     );
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(title: const Text("Investment Options")),
-  //     body: Padding(
-  //       padding: const EdgeInsets.all(20),
-  //       child: Form(
-  //         key: _formKey,
-  //         child: ListView(
-  //           children: [
-  //             if (_username.isNotEmpty)
-  //               Padding(
-  //                 padding: const EdgeInsets.only(bottom: 16),
-  //                 child: Text("Hello, $_username", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-  //               ),
-  //             _buildFieldWithSpeech(
-  //               label: "Age Group (0 to 150)",
-  //               controller: _ageGroupController,
-  //               isNumber: true,
-  //               validator: (v) {
-  //                 final val = int.tryParse(v ?? "");
-  //                 return (val == null || val < 0 || val > 150) ? "Enter a valid age (0–150)" : null;
-  //               },
-  //             ),
-  //             DropdownButtonFormField<String>(
-  //               value: _investmentFrequency,
-  //               decoration: const InputDecoration(labelText: "Investment Frequency"),
-  //               items: const [
-  //                 DropdownMenuItem(value: "Recurring", child: Text("Recurring")),
-  //                 DropdownMenuItem(value: "Lumpsum", child: Text("Lumpsum")),
-  //               ],
-  //               onChanged: (val) => setState(() => _investmentFrequency = val!),
-  //             ),
-  //             const SizedBox(height: 16),
-  //             _buildFieldWithSpeech(
-  //               label: "Investment Goal",
-  //               controller: _investmentGoalController,
-  //               isNumber: true,
-  //               validator: (v) => double.tryParse(v ?? "") == null ? "Enter a number" : null,
-  //             ),
-  //             _buildFieldWithSpeech(
-  //               label: "Investment Risk (0–100)",
-  //               controller: _investmentRiskController,
-  //               isNumber: true,
-  //               validator: (v) {
-  //                 final val = double.tryParse(v ?? "");
-  //                 return (val == null || val < 0 || val > 100) ? "Risk must be 0 to 100" : null;
-  //               },
-  //             ),
-  //             _buildFieldWithSpeech(
-  //               label: "Investment Amount",
-  //               controller: _investmentAmountController,
-  //               isNumber: true,
-  //               validator: (v) => double.tryParse(v ?? "") == null ? "Enter a number" : null,
-  //             ),
-  //               _buildFieldWithSpeech(
-  //               label: "Region",
-  //               controller: _regionController,
-  //               validator: (v) => (v == null || v.isEmpty) ? "Enter Region" : null,
-  //             ),
-  //             const SizedBox(height: 30),
-  //             ElevatedButton(onPressed: _submitForm, child: const Text("Save")),
-  //             if (_formSaved)
-  //             Padding(
-  //               padding: const EdgeInsets.only(top: 16),
-  //               child: ElevatedButton(
-  //                 onPressed: _generateStrategy,
-  //                 child: const Text("Generate Investment Strategy"),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-
-
-
-  @override
+@override
 Widget build(BuildContext context) {
   return Scaffold(
-    extendBodyBehindAppBar: true,
+    backgroundColor: Colors.white,
     appBar: AppBar(
-      title: const Text("Investment Options"),
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       elevation: 0,
+      title: Text(
+        'Investment Options',
+        style: GoogleFonts.poppins(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+      ),
+      centerTitle: true,
     ),
     body: Stack(
       children: [
-        // 🎨 Gradient + Blob Background
-        Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFFFDEBFF), Color(0xFFE8ECFF)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+        Positioned.fill(
+          child: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.white, Color(0xFFE3F2FD)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
             ),
           ),
         ),
-        Positioned(
-          top: 100,
-          left: -50,
-          child: AnimatedContainer(
-            duration: const Duration(seconds: 7),
-            curve: Curves.easeInOut,
-            width: 250,
-            height: 250,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.purple.withOpacity(0.2),
+        Center(
+          child: GlassmorphicContainer(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.88,
+            borderRadius: 20,
+            blur: 20,
+            alignment: Alignment.center,
+            border: 1,
+            linearGradient: LinearGradient(
+              colors: [
+                Colors.white.withOpacity(0.2),
+                Colors.blue.withOpacity(0.1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-          ).animate(onPlay: (c) => c.repeat(reverse: true)).moveX(begin: 0, end: 30),
-        ),
-        Positioned(
-          bottom: 80,
-          right: -30,
-          child: AnimatedContainer(
-            duration: const Duration(seconds: 6),
-            curve: Curves.easeInOut,
-            width: 200,
-            height: 200,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.pinkAccent.withOpacity(0.15),
+            borderGradient: LinearGradient(
+              colors: [
+                Colors.white.withOpacity(0.4),
+                Colors.blue.withOpacity(0.4),
+              ],
             ),
-          ).animate(onPlay: (c) => c.repeat(reverse: true)).moveX(begin: 0, end: -20),
-        ),
-
-        // 💡 Frosted Glass Form
-        SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
+            child: Padding(
               padding: const EdgeInsets.all(20),
-              child: GlassmorphicContainer(
-                width: double.infinity,
-                borderRadius: 30,
-                blur: 20,
-                alignment: Alignment.center,
-                border: 2,
-                linearGradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withOpacity(0.2),
-                    Colors.white38.withOpacity(0.2),
-                  ],
-                ),
-                borderGradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withOpacity(0.2),
-                    Colors.white54.withOpacity(0.2),
-                  ],
-                ),
-                height: MediaQuery.of(context).size.height * 0.8,
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        Text(
-                          "Hello, $_username 👋",
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.deepPurple,
-                              ),
-                        ).animate().fadeIn().slideY(),
-
-                        const SizedBox(height: 24),
-                        // Add all your _buildFieldWithSpeech here as is
-                        _buildFieldWithSpeech(
-                          label: "Age Group (0 to 150)",
-                          controller: _ageGroupController,
-                          isNumber: true,
-                          validator: (v) {
-                            final val = int.tryParse(v ?? "");
-                            return (val == null || val < 0 || val > 150) ? "Enter a valid age (0–150)" : null;
-                          },
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: [
+                    if (_username.isNotEmpty)
+                      Text(
+                        "Welcome, $_username!",
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF0A3D91),
                         ),
-                        // ... more fields
-
-                        const SizedBox(height: 30),
-                        ElevatedButton(
-                          onPressed: _submitForm,
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                            backgroundColor: const Color(0xFF7F00FF),
-                          ),
-                          child: const Text("💾 Save", style: TextStyle(fontSize: 18)),
-                        ).animate().scale(delay: 400.ms),
-
-                        if (_formSaved)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: ElevatedButton(
-                              onPressed: _generateStrategy,
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                backgroundColor: const Color(0xFF00B4D8),
-                              ),
-                              child: const Text("🚀 Generate Strategy", style: TextStyle(fontSize: 18)),
-                            ).animate().scale(delay: 600.ms),
-                          ),
-                      ],
+                      ).animate().fade(duration: 400.ms).slideY(),
+                    const SizedBox(height: 20),
+                    _buildFieldWithSpeech(
+                      label: "Your Age",
+                      controller: _ageGroupController,
+                      isNumber: true,
+                      validator: (v) {
+                        final val = int.tryParse(v ?? "");
+                        return (val == null || val < 0 || val > 150) ? "Enter a valid age (0–150)" : null;
+                      },
                     ),
-                  ),
+                   Theme(
+                    data: Theme.of(context).copyWith(
+                      canvasColor: Colors.white,
+                      shadowColor: Colors.grey.shade300,
+                    ),
+                    child: DropdownButtonFormField<String>(
+                      value: _investmentFrequency,
+                      decoration: InputDecoration(
+                        labelText: "How Often Do You Want to Invest?",
+                        labelStyle: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.blue.shade900,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.blueGrey),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.blueGrey),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.blue.shade700, width: 2),
+                        ),
+                      ),
+                      items: [
+                        DropdownMenuItem(
+                          value: "Recurring",
+                          child: Text("Recurring", style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue.shade800)),
+                        ),
+                        DropdownMenuItem(
+                          value: "Lumpsum",
+                          child: Text("Lumpsum", style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue.shade800)),
+                        ),
+                      ],
+                      onChanged: (val) => setState(() => _investmentFrequency = val!),
+                    ),
+                ),
+
+                   
+                   const SizedBox(height: 16),
+                    _buildFieldWithSpeech(
+                      label: "What Is Your Financial Goal? (₹)",
+                      controller: _investmentGoalController,
+                      isNumber: true,
+                      validator: (v) => double.tryParse(v ?? "") == null ? "Enter a number" : null,
+                    ),
+                    _buildRiskSlider(),
+                    _buildFieldWithSpeech(
+                      label: "How Much Do You Want to Invest? (₹)",
+                      controller: _investmentAmountController,
+                      isNumber: true,
+                      validator: (v) => double.tryParse(v ?? "") == null ? "Enter a number" : null,
+                    ),
+                    _buildFieldWithSpeech(
+                      label: "Your Location (City or Region)",
+                      controller: _regionController,
+                      validator: (v) => (v == null || v.isEmpty) ? "Enter Region" : null,
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: _submitForm,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF0A3D91),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        textStyle: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                      child: const Text("Save My Preferences", style: TextStyle(fontSize: 16, color: Colors.white)),
+                    ).animate().fade(duration: 600.ms).slideY(),
+                    if (_formSaved)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: ElevatedButton(
+                          onPressed: _generateStrategy,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF1565C0),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          child: const Text("Get My Investment Plan", style: TextStyle(color: Colors.white)),
+                        ).animate().fadeIn().slideY(begin: 0.3),
+                      ),
+                  ],
                 ),
               ),
             ),
