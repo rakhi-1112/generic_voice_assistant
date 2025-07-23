@@ -248,7 +248,7 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Investment submitted successfully!")),
+          const SnackBar(content: Text("Your preferences have been saved!")),
         );
         setState(() {
           _formSaved = true;
@@ -378,7 +378,7 @@ Widget build(BuildContext context) {
                       ).animate().fade(duration: 400.ms).slideY(),
                     const SizedBox(height: 20),
                     _buildFieldWithSpeech(
-                      label: "Age Group (0 to 150)",
+                      label: "Your Age",
                       controller: _ageGroupController,
                       isNumber: true,
                       validator: (v) {
@@ -386,30 +386,46 @@ Widget build(BuildContext context) {
                         return (val == null || val < 0 || val > 150) ? "Enter a valid age (0–150)" : null;
                       },
                     ),
-                    DropdownButtonFormField<String>(
+                   Theme(
+                    data: Theme.of(context).copyWith(
+                      canvasColor: Colors.white,
+                      shadowColor: Colors.grey.shade300,
+                    ),
+                    child: DropdownButtonFormField<String>(
                       value: _investmentFrequency,
-                      decoration: const InputDecoration(
-                        labelText: "Investment Frequency",
-                        border: OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF0A3D91), width: 2),
+                      decoration: InputDecoration(
+                        labelText: "How Often Do You Want to Invest?",
+                        labelStyle: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
                         ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                       ),
-                      items: const [
-                        DropdownMenuItem(value: "Recurring", child: Text("Recurring")),
-                        DropdownMenuItem(value: "Lumpsum", child: Text("Lumpsum")),
+                      items: [
+                        DropdownMenuItem(
+                          value: "Recurring",
+                          child: Text("Recurring", style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue.shade800)),
+                        ),
+                        DropdownMenuItem(
+                          value: "Lumpsum",
+                          child: Text("Lumpsum", style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue.shade800)),
+                        ),
                       ],
                       onChanged: (val) => setState(() => _investmentFrequency = val!),
                     ),
-                    const SizedBox(height: 16),
+                ),
+
+                   
+                   const SizedBox(height: 16),
                     _buildFieldWithSpeech(
-                      label: "Investment Goal",
+                      label: "What Is Your Financial Goal? (₹)",
                       controller: _investmentGoalController,
                       isNumber: true,
                       validator: (v) => double.tryParse(v ?? "") == null ? "Enter a number" : null,
                     ),
                     _buildFieldWithSpeech(
-                      label: "Investment Risk (0–100)",
+                      label: "How Much Risk % Can You Take? (0-100)",
                       controller: _investmentRiskController,
                       isNumber: true,
                       validator: (v) {
@@ -418,13 +434,13 @@ Widget build(BuildContext context) {
                       },
                     ),
                     _buildFieldWithSpeech(
-                      label: "Investment Amount",
+                      label: "How Much Do You Want to Invest? (₹)",
                       controller: _investmentAmountController,
                       isNumber: true,
                       validator: (v) => double.tryParse(v ?? "") == null ? "Enter a number" : null,
                     ),
                     _buildFieldWithSpeech(
-                      label: "Region",
+                      label: "Your Location (City or Region)",
                       controller: _regionController,
                       validator: (v) => (v == null || v.isEmpty) ? "Enter Region" : null,
                     ),
@@ -437,7 +453,7 @@ Widget build(BuildContext context) {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         textStyle: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
                       ),
-                      child: const Text("Save", style: TextStyle(fontSize: 16, color: Colors.white)),
+                      child: const Text("Save My Preferences", style: TextStyle(fontSize: 16, color: Colors.white)),
                     ).animate().fade(duration: 600.ms).slideY(),
                     if (_formSaved)
                       Padding(
@@ -449,7 +465,7 @@ Widget build(BuildContext context) {
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           ),
-                          child: const Text("Generate Investment Strategy", style: TextStyle(color: Colors.white)),
+                          child: const Text("Get My Investment Plan", style: TextStyle(color: Colors.white)),
                         ).animate().fadeIn().slideY(begin: 0.3),
                       ),
                   ],
