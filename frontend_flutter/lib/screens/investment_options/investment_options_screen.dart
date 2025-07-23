@@ -216,6 +216,64 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
     }
   }
 
+  double _riskValue = 50; // Add this in your state
+
+Widget _buildRiskSlider() {
+  String getRiskCategory(double value) {
+    if (value <= 33) return "Low";
+    if (value <= 66) return "Medium";
+    return "High";
+  }
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        "How Much Risk % Can You Take? (0-100)",
+        style: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: Colors.blue.shade900,
+        ),
+      ),
+      const SizedBox(height: 8),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("Low", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
+          Text("Medium", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
+          Text("High", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
+        ],
+      ),
+      Slider(
+        value: _riskValue,
+        min: 0,
+        max: 100,
+        divisions: 100,
+        label: "${_riskValue.round()}%",
+        activeColor: Colors.blue.shade700,
+        inactiveColor: Colors.blue.shade100,
+        onChanged: (value) {
+          setState(() => _riskValue = value);
+          _investmentRiskController.text = _riskValue.toStringAsFixed(0); // sync to controller
+        },
+      ),
+      Align(
+        alignment: Alignment.centerRight,
+        child: Text(
+          "Selected: ${_riskValue.round()}% (${getRiskCategory(_riskValue)})",
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: Colors.black87,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+      const SizedBox(height: 16),
+    ],
+  );
+}
+
 
   Future<void> _submitForm() async {
     FocusScope.of(context).unfocus();
@@ -457,15 +515,7 @@ Widget build(BuildContext context) {
                       isNumber: true,
                       validator: (v) => double.tryParse(v ?? "") == null ? "Enter a number" : null,
                     ),
-                    _buildFieldWithSpeech(
-                      label: "How Much Risk % Can You Take? (0-100)",
-                      controller: _investmentRiskController,
-                      isNumber: true,
-                      validator: (v) {
-                        final val = double.tryParse(v ?? "");
-                        return (val == null || val < 0 || val > 100) ? "Risk must be 0 to 100" : null;
-                      },
-                    ),
+                    _buildRiskSlider(),
                     _buildFieldWithSpeech(
                       label: "How Much Do You Want to Invest? (₹)",
                       controller: _investmentAmountController,
