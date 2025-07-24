@@ -49,7 +49,7 @@
   },
   "firebase": {
     "firebase_sdk_path": {
-      "value": "secrets/generic-voice-assistant-58932-firebase-adminsdk-fbsvc-bb6950a02c.json",
+      "value": "secrets/generic-voice-assistant-58932-firebase-adminsdk-fbsvc-b4ac8ccf90.json",
       "description": "Relative path to the firebase sdk json file for your firebase project. WARNING: DO NOT PUSH THE SDK FILE TO GITHUB. Instead, paste it anywhere within the project directory and enter the relative path to it here. Make sure the path is relative to the root of the project.",
       "type": "string",
       "required": true

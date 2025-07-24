@@ -84,7 +84,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
 
   Future<String?> getServerIp() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('server_ip') ?? 'http://192.168.1.3:5000';
+    return prefs.getString('server_ip') ?? 'http://192.168.1.39:5050';
   }
 
   Future<void> _sendToApi(String audioPath) async {

@@ -9,8 +9,14 @@ from Routes import register_blueprints
 from SettingsManager.settings_manager import SettingsManager
 from LanguageModel.language_model import LanguageModel
 
+# Remove these lines, as app is now created in create_app()
+
+app = Flask(__name__)
+
+@app.route('/create_app')
 def create_app():
     app = Flask(__name__)
+    register_blueprints(app)
 
     settings_manager = SettingsManager()
     model = LanguageModel(settings_manager, 'ModelPath')
@@ -27,8 +33,11 @@ def create_app():
     db = firestore.client()
     app.firebase_db = db
 
-    register_blueprints(app)
     return app
+# @app.route('/')
+# def home():
+#     return 'Server is up and running!'
+
 
 if __name__ == "__main__":
     app = create_app()

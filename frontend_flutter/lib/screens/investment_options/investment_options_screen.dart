@@ -100,7 +100,7 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
 
   Future<String?> getServerIp() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('server_ip') ?? 'http://192.168.1.3:5000';
+    return prefs.getString('server_ip') ?? 'http://192.168.1.39:5050';
   }
 
   Future<void> speak(String text) async {
@@ -321,14 +321,24 @@ Widget _buildRiskSlider() {
 
     if (!_formKey.currentState!.validate()) return;
 
+    final ageRaw = _ageGroupController.text.trim();
+    final goalRaw = _investmentGoalController.text.trim();
+    final riskRaw = _investmentRiskController.text.trim();
+    final amountRaw = _investmentAmountController.text.trim();
+
+    final age = int.tryParse(ageRaw);
+    final goal = int.tryParse(goalRaw);
+    final risk = int.tryParse(riskRaw);
+    final amount = int.tryParse(amountRaw);
+
     final Map<String, dynamic> payload = {
       "username": _username,
-      "age_group": int.parse(_ageGroupController.text),
+      "age_group": age,
       "inv_frequency": _investmentFrequency,
-      "inv_goal": double.parse(_investmentGoalController.text),
-      "inv_risk": double.parse(_investmentRiskController.text),
-      "inv_amount": double.parse(_investmentAmountController.text),
-      "reg": _regionController.text,
+      "inv_goal": goal,
+      "inv_risk": risk,
+      "inv_amount": amount,
+      "reg": _selectedState ?? "Unknown", // fallback if not selected
     };
 
     try {

@@ -10,8 +10,8 @@ class LanguageModel:
         self.__system_prompt = ""
 
         self.__device = 'cpu'
-        if torch.cuda.is_available():
-            self.__device = 'cuda'
+        # if torch.cuda.is_available():
+        #     self.__device = 'cuda'
         self.__model = GPT4All(model_name = gguf_name, 
                                model_path = model_path, 
                                device = self.__device, 

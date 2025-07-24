@@ -40,9 +40,9 @@
         self.__device = 'cuda'
     ```
 5. Now start the server with `Python server.py`
-6. Make a note of the non-localhost ip of the server, something like: `http://192.168.x.x:5000`.
+6. Make a note of the non-localhost ip of the server, something like: `http://192.168.x.x:5050`.
 
-7. To view all the api endpoints on the server, go to a browser and use `http://192.168.x.x:5000/apidocs`
+7. To view all the api endpoints on the server, go to a browser and use `http://192.168.x.x:5050/apidocs`
 
 ## Running Frontend
 **Prerequisites**:
@@ -69,11 +69,11 @@
 1. Open a terminal inside `fronted_flutter`
 2. Type `flutter run`. If you have an emulator running, or your phone connected to the PC with USB, then the app should launch in a short time on your phone.
 3. Once the app is running, navigate to `Settings` from the left sidebar.
-4. Set the server ip here: example: `http://192.168.x.x:5000`
+4. Set the server ip here: example: `http://192.168.x.x:5050`
 5. Now everything is set
 
 **Note**: Currently there is no frontend option to add users. However there is a backend endpoint for it.
-1. Go to the swagger page at `http://192.168.x.x:5000/apidocs`.
+1. Go to the swagger page at `http://192.168.x.x:5050/apidocs`.
 2. Use the endpoint `/api/user/create_user` to create a user.
 3. Write the username for this user in the `Settings` page.
 4. Now you can use all the functionality iin the app without issues.
