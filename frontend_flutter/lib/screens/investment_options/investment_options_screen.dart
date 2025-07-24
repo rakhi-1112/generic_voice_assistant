@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -325,6 +326,7 @@ Widget _buildFieldWithSpeech({
   required TextEditingController controller,
   required String? Function(String?) validator,
   bool isNumber = false,
+  bool isAgeField = false,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -359,9 +361,26 @@ Widget _buildFieldWithSpeech({
         ],
       ),
       TextFormField(
+        autovalidateMode:
+          isAgeField ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
         controller: controller,
         keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+        inputFormatters: isNumber
+            ? [FilteringTextInputFormatter.digitsOnly]
+            : [],
         validator: validator,
+        onChanged: isAgeField
+          ? (value) {
+              final age = int.tryParse(value);
+              if (age == null || age < 0 || age > 99) {
+                controller.text = value.replaceAll(RegExp(r'[^0-9]'), '');
+                controller.selection = TextSelection.fromPosition(
+                  TextPosition(offset: controller.text.length),
+                );
+              }
+            }
+          : null,
+
         style: GoogleFonts.poppins(
           fontSize: 15,
           color: Colors.black87,
@@ -373,6 +392,7 @@ Widget _buildFieldWithSpeech({
           fillColor: Colors.white,
         ),
       ),
+
       const SizedBox(height: 16),
     ],
   );
@@ -457,11 +477,16 @@ Widget build(BuildContext context) {
                     const SizedBox(height: 20),
                     _buildFieldWithSpeech(
                       label: "Your Age",
+                      isAgeField: true,
                       controller: _ageGroupController,
                       isNumber: true,
                       validator: (v) {
-                        final val = int.tryParse(v ?? "");
-                        return (val == null || val < 0 || val > 150) ? "Enter a valid age (0–150)" : null;
+                        if (v == null || v.isEmpty) return "Age is required";
+                        final age = int.tryParse(v);
+                        if (age == null || age < 0 || age > 99) {
+                          return "Enter a valid age (0–99)";
+                        }
+                        return null;
                       },
                     ),
                    Theme(
