@@ -34,6 +34,46 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
   String _investmentFrequency = 'Recurring';
   String _username = '';
   bool _formSaved = false;
+  String? _selectedState;
+  final List<String> _indianStates = [
+    'Andhra Pradesh',
+    'Arunachal Pradesh',
+    'Assam',
+    'Bihar',
+    'Chhattisgarh',
+    'Goa',
+    'Gujarat',
+    'Haryana',
+    'Himachal Pradesh',
+    'Jharkhand',
+    'Karnataka',
+    'Kerala',
+    'Madhya Pradesh',
+    'Maharashtra',
+    'Manipur',
+    'Meghalaya',
+    'Mizoram',
+    'Nagaland',
+    'Odisha',
+    'Punjab',
+    'Rajasthan',
+    'Sikkim',
+    'Tamil Nadu',
+    'Telangana',
+    'Tripura',
+    'Uttar Pradesh',
+    'Uttarakhand',
+    'West Bengal',
+    'Delhi',
+    'Jammu and Kashmir',
+    'Ladakh',
+    'Andaman and Nicobar Islands',
+    'Chandigarh',
+    'Dadra and Nagar Haveli and Daman and Diu',
+    'Lakshadweep',
+    'Puducherry'
+];
+
 
   final AudioRecorder _recorder = AudioRecorder();
   bool _isRecording = false;
@@ -548,11 +588,47 @@ Widget build(BuildContext context) {
                       isNumber: true,
                       validator: (v) => double.tryParse(v ?? "") == null ? "Enter a number" : null,
                     ),
-                    _buildFieldWithSpeech(
-                      label: "Your Location (City or Region)",
-                      controller: _regionController,
-                      validator: (v) => (v == null || v.isEmpty) ? "Enter Region" : null,
+                    Theme(
+                    data: Theme.of(context).copyWith(
+                      canvasColor: Colors.white,
+                      shadowColor: Colors.grey.shade300,
                     ),
+                    child: DropdownButtonFormField<String>(
+  value: _selectedState,
+  decoration: InputDecoration(
+    labelText: "Select Your State",
+    labelStyle: GoogleFonts.poppins(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      color: Colors.blue.shade900,
+    ),
+    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+    filled: true,
+    fillColor: Colors.white,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Colors.blueGrey),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Colors.blueGrey),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.blue.shade700, width: 2),
+    ),
+  ),
+  items: _indianStates.map((state) {
+    return DropdownMenuItem<String>(
+      value: state,
+      child: Text(state, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue.shade800)),
+    );
+  }).toList(),
+  onChanged: (val) => setState(() => _selectedState = val!),
+),
+
+                ),
+
                     const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: _submitForm,
