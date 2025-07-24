@@ -151,7 +151,7 @@ class HomeScreen extends StatelessWidget {
                         context,
                         title: "📊 Tracker",
                         description: "Track your financial journey",
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => AgeBasedOnboardingScreen(onComplete: (_) {}))),
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => InvestmentTrackerScreen())),
                         textStyle: textStyle,
                       ),
                     ],
