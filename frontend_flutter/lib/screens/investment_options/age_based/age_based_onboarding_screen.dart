@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:frontend_flutter/screens/investment_options/age_based/utils/age_group_engine.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AgeBasedOnboardingScreen extends StatefulWidget {
   final Function(Map<String, dynamic>) onComplete;
@@ -53,6 +54,19 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Text(
+          'AI Powered Financial Coach',
+          style: GoogleFonts.poppins(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
+
       body: Stack(
         children: [
           _buildAnimatedBlobBackground(),
