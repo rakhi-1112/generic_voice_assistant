@@ -144,7 +144,7 @@ class HomeScreen extends StatelessWidget {
                         context,
                         title: "🎮 Gamification",
                         description: "Financial literacy through fun",
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => AgeBasedOnboardingScreen(onComplete: (_) {}))),
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => MoneyQuestGameScreen())),
                         textStyle: textStyle,
                       ),
                       _buildHomeCard(
