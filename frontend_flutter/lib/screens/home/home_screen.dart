@@ -142,7 +142,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       _buildHomeCard(
                         context,
-                        title: "🎮 Gamification",
+                        title: "🎮 Money Quest",
                         description: "Financial literacy through fun",
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => MoneyQuestGameScreen())),
                         textStyle: textStyle,

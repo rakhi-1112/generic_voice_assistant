@@ -261,7 +261,7 @@ Widget build(BuildContext context) {
               ),
             ),
             foregroundColor: Colors.black,
-            automaticallyImplyLeading: false,
+            automaticallyImplyLeading: true,
           ),
         ),
       ),
