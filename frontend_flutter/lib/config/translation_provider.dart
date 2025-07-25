@@ -51,7 +51,7 @@ class TranslationProvider extends ChangeNotifier {
   Future<String> _fetchFromLibreTranslate(String text) async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:5050/translate'),
+        Uri.parse('http://localhost:5000/translate'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'q': text,
