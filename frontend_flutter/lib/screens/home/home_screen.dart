@@ -12,7 +12,7 @@ import '../investment_tracker/investment_tracker_screen.dart';
 import '../gamification/money_quest_game_screen.dart';
 import 'package:frontend_flutter/screens/investment_options/age_based/age_based_onboarding_screen.dart';
 import '../home/login_screen.dart'; // For reference if needed
-import 'package:frontend_flutter/config/translated_text.dart';
+import 'package:frontend_flutter/config/translated_text.dart' as trans;
 import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -60,7 +60,7 @@ class HomeScreen extends StatelessWidget {
               backgroundColor: Colors.transparent,
               elevation: 0,
               centerTitle: true,
-              title: Text(
+              title: trans.TranslatedText(
                 "Home",
                 style: GoogleFonts.poppins(
                   fontSize: 22,
@@ -91,7 +91,7 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                trans.TranslatedText(
                   "Welcome 👋",
                   style: GoogleFonts.poppins(
                     fontSize: 32,
@@ -201,9 +201,9 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: textStyle),
+              trans.TranslatedText(title, style: textStyle),
               const Spacer(),
-              Text(
+              trans.TranslatedText(
                 description,
                 style: textStyle.copyWith(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.blue.shade700),
               ),
@@ -260,7 +260,7 @@ class AppSidebar extends StatelessWidget {
                 ],
               ),
               child: Center(
-                child: TranslatedText(
+                child: trans.TranslatedText(
                   "Menu",
                   style: GoogleFonts.poppins(
                     fontSize: 22,
@@ -332,7 +332,7 @@ class AppSidebar extends StatelessWidget {
   }) {
     return ListTile(
       leading: Icon(icon, color: Colors.blue.shade800),
-      title: Text(label, style: style),
+      title: trans.TranslatedText(label, style: style),
       onTap: onTap,
       hoverColor: Colors.blue.shade50.withOpacity(0.3),
     );

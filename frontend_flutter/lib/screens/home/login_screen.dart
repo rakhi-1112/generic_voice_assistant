@@ -168,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _submit() async {
   if (_formKey.currentState?.validate() ?? false) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Logging in...")),
+      const SnackBar(content: TranslatedText("Logging in...")),
     );
 
     try {
@@ -190,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // Email verified, proceed to HomeScreen
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Login successful!")),
+        const SnackBar(content: TranslatedText("Login successful!")),
       );
 
       Future.delayed(const Duration(seconds: 1), () {
@@ -210,7 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
+        SnackBar(content: TranslatedText(message)),
       );
     }
   }
@@ -239,7 +239,7 @@ Widget build(BuildContext context) {
             backgroundColor: Colors.transparent,
             elevation: 0,
             centerTitle: true,
-            title: Text(
+            title: TranslatedText(
               "Login",
               style: GoogleFonts.poppins(
                 fontSize: 22,
@@ -270,7 +270,7 @@ Widget build(BuildContext context) {
             key: _formKey,
             child: ListView(
               children: [
-                Text(
+                TranslatedText(
                   "Welcome Back 👋",
                   style: GoogleFonts.poppins(
                     fontSize: 28,
@@ -306,7 +306,7 @@ Widget build(BuildContext context) {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                   ),
-                  child: Text(
+                  child: TranslatedText(
                     "Login",
                     style: GoogleFonts.poppins(
                       color: Colors.white,
@@ -319,7 +319,7 @@ Widget build(BuildContext context) {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Don't have an account?", style: GoogleFonts.poppins(color: Colors.black)),
+                    TranslatedText("Don't have an account?", style: GoogleFonts.poppins(color: Colors.black)),
                     TextButton(
                       onPressed: () {
                         Navigator.push(
@@ -327,7 +327,7 @@ Widget build(BuildContext context) {
                           MaterialPageRoute(builder: (_) => const RegisterScreen()),
                         );
                       },
-                      child: Text("Register here", style: GoogleFonts.poppins(color: Colors.blue.shade700)),
+                      child: TranslatedText("Register here", style: GoogleFonts.poppins(color: Colors.blue.shade700)),
                     ),
                   ],
                 )
