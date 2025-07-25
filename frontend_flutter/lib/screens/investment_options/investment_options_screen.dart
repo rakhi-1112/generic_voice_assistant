@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:frontend_flutter/config/translated_text.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -101,7 +100,7 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
 
   Future<String?> getServerIp() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('server_ip') ?? 'http://192.168.1.3:5000';
+    return prefs.getString('server_ip') ?? 'http://192.168.1.39:5050';
   }
 
   Future<void> speak(String text) async {
@@ -178,7 +177,7 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: TranslatedText(message)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _saveSystemPrompt() async {
@@ -270,7 +269,7 @@ Widget _buildRiskSlider() {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      TranslatedText(
+      Text(
         "How Much Risk % Can You Take? (0-100)",
         style: GoogleFonts.poppins(
           fontSize: 16,
@@ -282,9 +281,9 @@ Widget _buildRiskSlider() {
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          TranslatedText("Low", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
-          TranslatedText("Medium", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
-          TranslatedText("High", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
+          Text("Low", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
+          Text("Medium", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
+          Text("High", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
         ],
       ),
       Slider(
@@ -302,7 +301,7 @@ Widget _buildRiskSlider() {
       ),
       Align(
         alignment: Alignment.centerRight,
-        child: TranslatedText(
+        child: Text(
           "Selected: ${_riskValue.round()}% (${getRiskCategory(_riskValue)})",
           style: GoogleFonts.poppins(
             fontSize: 14,
@@ -358,7 +357,7 @@ Widget _buildRiskSlider() {
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: TranslatedText("Your preferences have been saved!")),
+          const SnackBar(content: Text("Your preferences have been saved!")),
         );
         setState(() {
           _formSaved = true;
@@ -385,7 +384,7 @@ Widget _buildFieldWithSpeech({
       Row(
         children: [
           Expanded(
-            child: TranslatedText(
+            child: Text(
               label,
               style: GoogleFonts.poppins(
                 fontSize: 16,
@@ -466,7 +465,7 @@ Widget build(BuildContext context) {
     appBar: AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
-      title: TranslatedText(
+      title: Text(
         'Investment Options',
         style: GoogleFonts.poppins(
         fontSize: 20,
@@ -517,7 +516,7 @@ Widget build(BuildContext context) {
                 child: ListView(
                   children: [
                     if (_username.isNotEmpty)
-                      TranslatedText(
+                      Text(
                         "Welcome, $_username!",
                         style: const TextStyle(
                           fontSize: 20,
@@ -548,7 +547,7 @@ Widget build(BuildContext context) {
                     child: DropdownButtonFormField<String>(
                       value: _investmentFrequency,
                       decoration: InputDecoration(
-                         label: TranslatedText("How Often Do You Want to Invest?"),
+                        labelText: "How Often Do You Want to Invest?",
                         labelStyle: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -573,11 +572,11 @@ Widget build(BuildContext context) {
                       items: [
                         DropdownMenuItem(
                           value: "Recurring",
-                          child: TranslatedText("Recurring", style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue.shade800)),
+                          child: Text("Recurring", style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue.shade800)),
                         ),
                         DropdownMenuItem(
                           value: "Lumpsum",
-                          child: TranslatedText("Lumpsum", style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue.shade800)),
+                          child: Text("Lumpsum", style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue.shade800)),
                         ),
                       ],
                       onChanged: (val) => setState(() => _investmentFrequency = val!),
@@ -607,8 +606,7 @@ Widget build(BuildContext context) {
                     child: DropdownButtonFormField<String>(
   value: _selectedState,
   decoration: InputDecoration(
-     label: TranslatedText(
-    "Select Your State"),
+    labelText: "Select Your State",
     labelStyle: GoogleFonts.poppins(
       fontSize: 16,
       fontWeight: FontWeight.w600,
@@ -633,7 +631,7 @@ Widget build(BuildContext context) {
   items: _indianStates.map((state) {
     return DropdownMenuItem<String>(
       value: state,
-      child: TranslatedText(state, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue.shade800)),
+      child: Text(state, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue.shade800)),
     );
   }).toList(),
   onChanged: (val) => setState(() => _selectedState = val!),
@@ -650,7 +648,7 @@ Widget build(BuildContext context) {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         textStyle: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
                       ),
-                      child: const TranslatedText("Save My Preferences", style: TextStyle(fontSize: 16, color: Colors.white)),
+                      child: const Text("Save My Preferences", style: TextStyle(fontSize: 16, color: Colors.white)),
                     ).animate().fade(duration: 600.ms).slideY(),
                     if (_formSaved)
                       Padding(
@@ -658,11 +656,12 @@ Widget build(BuildContext context) {
                         child: ElevatedButton(
                           onPressed: _generateStrategy,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF1565C0),
+                            backgroundColor: const Color.fromARGB(255, 28, 81, 165),
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            textStyle: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
                           ),
-                          child: const TranslatedText("Get My Investment Plan", style: TextStyle(color: Colors.white)),
+                          child: const Text("Get My Investment Plan", style: TextStyle(fontSize: 16, color: Colors.white)),
                         ).animate().fadeIn().slideY(begin: 0.3),
                       ),
                   ],

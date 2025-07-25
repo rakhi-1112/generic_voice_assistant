@@ -15,7 +15,6 @@ class _SplashScreenState extends State<SplashScreen> {
   final Map<String, String> languageMap = {
     'en': 'English',
     'hi': 'हिंदी',
-    'mr' :'मराठी'
   };
 
   @override

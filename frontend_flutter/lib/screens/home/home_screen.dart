@@ -12,7 +12,7 @@ import '../investment_tracker/investment_tracker_screen.dart';
 import '../gamification/money_quest_game_screen.dart';
 import 'package:frontend_flutter/screens/investment_options/age_based/age_based_onboarding_screen.dart';
 import '../home/login_screen.dart'; // For reference if needed
-import 'package:frontend_flutter/config/translated_text.dart' as trans;
+import 'package:frontend_flutter/config/translated_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -60,7 +60,7 @@ class HomeScreen extends StatelessWidget {
               backgroundColor: Colors.transparent,
               elevation: 0,
               centerTitle: true,
-              title: trans.TranslatedText(
+              title: Text(
                 "Home",
                 style: GoogleFonts.poppins(
                   fontSize: 22,
@@ -91,7 +91,7 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                trans.TranslatedText(
+                Text(
                   "Welcome 👋",
                   style: GoogleFonts.poppins(
                     fontSize: 32,
@@ -151,7 +151,7 @@ class HomeScreen extends StatelessWidget {
                         context,
                         title: "📊 Tracker",
                         description: "Track your financial journey",
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const InvestmentTrackerScreen())),
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => InvestmentTrackerScreen())),
                         textStyle: textStyle,
                       ),
                     ],
@@ -201,9 +201,9 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              trans.TranslatedText(title, style: textStyle),
+              Text(title, style: textStyle),
               const Spacer(),
-              trans.TranslatedText(
+              Text(
                 description,
                 style: textStyle.copyWith(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.blue.shade700),
               ),
@@ -220,64 +220,106 @@ class AppSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textStyle = GoogleFonts.poppins(
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      color: Colors.blue.shade900,
+    );
+
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
-            child: trans.TranslatedText("Menu", style: TextStyle(color: Colors.white)),
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.white, Color(0xFFE3F2FD)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          ListTile(
-            leading: const Icon(Icons.home),
-            title: const trans.TranslatedText("Home"),
-            onTap: () => Navigator.of(context).pop(),
-          ),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const trans.TranslatedText("Settings"),
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SettingsScreen())),
-          ),
-          ListTile(
-            leading: const Icon(Icons.attach_money),
-            title: const trans.TranslatedText("Investment Options"),
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const InvestmentOptionsScreen())),
-          ),
-          ListTile(
-            leading: const Icon(Icons.build),
-            title: const trans.TranslatedText("Financial Toolkit"),
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FinancialToolkitMenu())),
-          ),
-          ListTile(
-            leading: const Icon(Icons.bar_chart),
-            title: const trans.TranslatedText("Investment Tracker"),
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const InvestmentTrackerScreen())),
-          ),
-          ListTile(
-            leading: const Icon(Icons.videogame_asset),
-            title: const trans.TranslatedText("Money Quest Game"),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const MoneyQuestGameScreen(),
-              ));
-            },
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const trans.TranslatedText("Logout"),
-            onTap: () async {
-              Navigator.of(context).pop();
-
-              await FirebaseAuth.instance.signOut();
-
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                '/login',
-                (route) => false,
-              );
-            },
-          ),
-        ],
+        ),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            GlassmorphicContainer(
+              width: double.infinity,
+              height: 120,
+              borderRadius: 0,
+              blur: 20,
+              alignment: Alignment.center,
+              border: 0,
+              linearGradient: LinearGradient(
+                colors: [
+                  Colors.white.withOpacity(0.2),
+                  Colors.blue.withOpacity(0.1),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderGradient: LinearGradient(
+                colors: [
+                  Colors.white.withOpacity(0.3),
+                  Colors.blue.withOpacity(0.3),
+                ],
+              ),
+              child: Center(
+                child: TranslatedText(
+                  "Menu",
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade900,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            _buildDrawerItem(
+              icon: Icons.home,
+              label: "Home",
+              onTap: () => Navigator.of(context).pop(),
+              style: textStyle,
+            ),
+            _buildDrawerItem(
+              icon: Icons.settings,
+              label: "Settings",
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SettingsScreen())),
+              style: textStyle,
+            ),
+            _buildDrawerItem(
+              icon: Icons.attach_money,
+              label: "Investment Options",
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const InvestmentOptionsScreen())),
+              style: textStyle,
+            ),
+            _buildDrawerItem(
+              icon: Icons.build,
+              label: "Financial Toolkit",
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FinancialToolkitMenu())),
+              style: textStyle,
+            ),
+            _buildDrawerItem(
+              icon: Icons.bar_chart,
+              label: "Investment Tracker",
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const InvestmentTrackerScreen())),
+              style: textStyle,
+            ),
+            _buildDrawerItem(
+              icon: Icons.videogame_asset,
+              label: "Money Quest Game",
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const MoneyQuestGameScreen())),
+              style: textStyle,
+            ),
+            const Divider(thickness: 1, indent: 16, endIndent: 16),
+            _buildDrawerItem(
+              icon: Icons.logout,
+              label: "Logout",
+              onTap: () async {
+                Navigator.of(context).pop();
+                await FirebaseAuth.instance.signOut();
+                Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+              },
+              style: textStyle,
+            ),
+          ],
+        ),
       ),
     );
   }

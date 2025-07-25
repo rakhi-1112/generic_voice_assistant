@@ -11,8 +11,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+// Replace with your actual LoginScreen import
 import 'login_screen.dart';
-import 'splash_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -36,7 +36,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? _audioPath;
 
   String? _selectedGender;
-  String? _hasBankAccount = 'No';
 
   @override
   void dispose() {
@@ -52,7 +51,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<String?> getServerIp() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('server_ip') ?? 'http://192.168.1.3:5000';
+    return prefs.getString('server_ip') ?? 'http://192.168.1.39:5050';
   }
 
   Future<void> speak(String text) async {
@@ -294,53 +293,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget buildBankAccountDropdown() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const TranslatedText("Do you have a bank account?", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-        const SizedBox(height: 6),
-        SizedBox(
-          width: 250,
-          height: 48,
-          child: DropdownButtonFormField<String>(
-            value: _hasBankAccount,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: Colors.black),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: Colors.black),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: Colors.black, width: 2),
-              ),
-              filled: true,
-              fillColor: Colors.transparent,
-              isDense: true,
-            ),
-            isExpanded: true,
-            items: const [
-              DropdownMenuItem(value: "Yes", child: TranslatedText("Yes")),
-              DropdownMenuItem(value: "No", child: TranslatedText("No")),
-            ],
-            onChanged: (value) {
-              setState(() {
-                _hasBankAccount = value;
-              });
-            },
-            validator: (value) => value == null ? "Please select an option" : null,
-          ),
-        ),
-        const SizedBox(height: 16),
-      ],
-    );
-  }
-
   void _submit() async {
     if (_formKey.currentState?.validate() ?? false) {
       if (_passwordController.text != _confirmPasswordController.text) {
@@ -350,70 +302,57 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return;
       }
 
-      // Prevent registration if no bank account, but allow registration, just show message later
-      final hasBankAccount = _hasBankAccount?.toLowerCase() == "yes";
-
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: TranslatedText("Registering...")),
       );
 
       try {
-        // Create user in Firebase Auth
-        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        final UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text,
         );
 
-        User? user = userCredential.user;
+        await userCredential.user?.updateDisplayName(_nameController.text.trim());
 
-        if (user != null) {
-          // Optionally send email verification
-          await user.sendEmailVerification();
+        // Send email verification correctly
+        await userCredential.user?.sendEmailVerification();
 
-          // Save user details to your backend if needed here
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: TranslatedText("Registration successful! Please verify your email before logging in."),
+          ),
+        );
 
-          // After registration success, show the message if no bank account
-          if (!hasBankAccount) {
-            await showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: const TranslatedText("Registration Successful"),
-                content: const TranslatedText(
-                  "Your details are registered. Our executive will contact you about creating a bank account.",
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop(); // Back to login page
-                    },
-                    child: const TranslatedText("OK"),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            // Normal successful registration message and pop
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: TranslatedText("Registration successful! Please verify your email before login.")),
-            );
-            Future.delayed(const Duration(seconds: 1), () {
-              Navigator.of(context).pop();
-            });
-          }
-        }
+        // Navigate to login after 2 seconds
+        Future.delayed(const Duration(seconds: 2), () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
+        });
       } on FirebaseAuthException catch (e) {
-        String message = "Registration failed.";
-        if (e.code == 'email-already-in-use') {
-          message = "This email is already registered.";
-        } else if (e.code == 'invalid-email') {
-          message = "Invalid email address.";
-        } else if (e.code == 'weak-password') {
-          message = "Password is too weak.";
+        String errorMessage;
+        switch (e.code) {
+          case 'email-already-in-use':
+            errorMessage = 'This email is already in use.';
+            break;
+          case 'invalid-email':
+            errorMessage = 'Invalid email address.';
+            break;
+          case 'weak-password':
+            errorMessage = 'Password is too weak.';
+            break;
+          default:
+            errorMessage = 'Registration failed. Please try again.';
         }
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: TranslatedText(message)),
+          SnackBar(content: Text(errorMessage)),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('An unexpected error occurred.')),
         );
       }
     }

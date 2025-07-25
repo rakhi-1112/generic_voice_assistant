@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:frontend_flutter/config/translated_text.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class InvestmentStrategyScreen extends StatefulWidget {
   final String strategyText;
@@ -37,7 +35,7 @@ class _InvestmentStrategyScreenState extends State<InvestmentStrategyScreen> {
 
   Future<String?> _getServerIp() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('server_ip') ?? 'http://192.168.1.3:5000';
+    return prefs.getString('server_ip') ?? 'http://192.168.1.39:5050';
   }
 
   Future<void> _speak() async {
@@ -66,21 +64,21 @@ class _InvestmentStrategyScreenState extends State<InvestmentStrategyScreen> {
           whenFinished: () => setState(() => _isPlaying = false),
         );
       } else {
-        _showError(TranslatedText('TTS failed').text);
+        _showError('TTS failed');
       }
     } catch (e) {
-      _showError(TranslatedText('Error: $e').text);
+      _showError('Error: $e');
     }
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: TranslatedText(message)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const TranslatedText("Your Investment Strategy")),
+      appBar: AppBar(title: const Text("Your Investment Strategy")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -100,7 +98,7 @@ class _InvestmentStrategyScreenState extends State<InvestmentStrategyScreen> {
                 ElevatedButton.icon(
                   onPressed: (_isLoading || _isPlaying) ? null : _speak,
                   icon: const Icon(Icons.volume_up),
-                  label: const TranslatedText("Read Aloud"),
+                  label: const Text("Read Aloud"),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                     textStyle: const TextStyle(fontSize: 16),

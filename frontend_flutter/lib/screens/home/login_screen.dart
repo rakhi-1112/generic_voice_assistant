@@ -24,6 +24,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -41,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<String?> getServerIp() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('server_ip') ?? 'http://192.168.1.3:5000';
+    return prefs.getString('server_ip') ?? 'http://192.168.1.39:5050';
   }
 
   Future<void> speak(String text) async {
@@ -145,18 +146,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: const TextStyle(color: Colors.black),
               ),
             ),
-            //IconButton(icon: const Icon(Icons.volume_up, color: Colors.black), onPressed: () => speak(label)),
-            //IconButton(
-              //icon: Icon(_isRecording ? Icons.mic_off : Icons.mic, color: Colors.black),
-              //onPressed: () async {
-               // if (!_isRecording) {
-                //  await startRecording();
-                //} else {
-                  //final transcript = await stopRecordingAndTranscribe();
-                  //if (transcript != null) controller.text = transcript;
-               // }
-              //},
-            //),
+            // IconButton(icon: const Icon(Icons.volume_up, color: Colors.black), onPressed: () => speak(label)),
+            // IconButton(
+            //   icon: Icon(_isRecording ? Icons.mic_off : Icons.mic, color: Colors.black),
+            //   onPressed: () async {
+            //     if (!_isRecording) {
+            //       await startRecording();
+            //     } else {
+            //       final transcript = await stopRecordingAndTranscribe();
+            //       if (transcript != null) controller.text = transcript;
+            //     }
+            //   },
+            // ),
           ],
         ),
         const SizedBox(height: 16),
@@ -165,164 +166,178 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _submit() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: TranslatedText("Logging in...")),
+  if (_formKey.currentState?.validate() ?? false) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Logging in...")),
+    );
+
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
       );
 
-      try {
-        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-        );
+      User? user = userCredential.user;
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: TranslatedText("Login successful!")),
         );
 
-        Future.delayed(const Duration(seconds: 1), () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-          );
-        });
-      } on FirebaseAuthException catch (e) {
-        String message = "Login failed.";
-        if (e.code == 'user-not-found') {
-          message = "No user found for this email.";
-        } else if (e.code == 'wrong-password') {
-          message = "Incorrect password.";
-        } else if (e.code == 'invalid-email') {
-          message = "Invalid email address.";
-        }
+      //   // Optional: Sign out user to prevent unverified access
+      //   await FirebaseAuth.instance.signOut();
+      //   return;
+      // }
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: TranslatedText(message)),
+      // Email verified, proceed to HomeScreen
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Login successful!")),
+      );
+
+      Future.delayed(const Duration(seconds: 1), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
+      });
+    } on FirebaseAuthException catch (e) {
+      String message = "Login failed.";
+      if (e.code == 'user-not-found') {
+        message = "No user found for this email.";
+      } else if (e.code == 'wrong-password') {
+        message = "Incorrect password.";
+      } else if (e.code == 'invalid-email') {
+        message = "Invalid email address.";
       }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
     }
   }
+}
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: ClipRRect(
-          borderRadius: const BorderRadius.vertical(
-            bottom: Radius.circular(20),
+
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    extendBodyBehindAppBar: true,
+    appBar: PreferredSize(
+      preferredSize: const Size.fromHeight(60),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(
+          bottom: Radius.circular(20),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.white.withOpacity(0.2), Colors.blue.withOpacity(0.1)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.white.withOpacity(0.2), Colors.blue.withOpacity(0.1)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            centerTitle: true,
+            title: Text(
+              "Login",
+              style: GoogleFonts.poppins(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue.shade900,
               ),
             ),
-            child: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              centerTitle: true,
-              title: TranslatedText(
-                "Login",
-                style: GoogleFonts.poppins(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue.shade900,
-                ),
-              ),
-              foregroundColor: Colors.black,
-              automaticallyImplyLeading: true,
-            ),
+            foregroundColor: Colors.black,
+            automaticallyImplyLeading: true,
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.white, Color(0xFFE3F2FD)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
+    ),
+    body: Stack(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.white, Color(0xFFE3F2FD)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 80),
-            child: Form(
-              key: _formKey,
-              child: ListView(
-                children: [
-                  TranslatedText(
-                    "Welcome Back 👋",
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 80),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: [
+                Text(
+                  "Welcome Back 👋",
+                  style: GoogleFonts.poppins(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.blue.shade900,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 40),
+                buildFieldWithSpeech(
+                  label: "Email",
+                  controller: _emailController,
+                  icon: Icons.email,
+                  validator: (v) {
+                    if (v == null || v.trim().isEmpty) return "Please enter email";
+                    final emailRegex = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+                    if (!emailRegex.hasMatch(v)) return "Enter a valid email";
+                    return null;
+                  },
+                ),
+                buildFieldWithSpeech(
+                  label: "Password",
+                  controller: _passwordController,
+                  icon: Icons.lock,
+                  isPassword: true,
+                  validator: (v) => (v == null || v.isEmpty) ? "Please enter password" : null,
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: _submit,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.shade700,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  ),
+                  child: Text(
+                    "Login",
                     style: GoogleFonts.poppins(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.blue.shade900,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 40),
-                  buildFieldWithSpeech(
-                    label: "Email",
-                    controller: _emailController,
-                    icon: Icons.email,
-                    validator: (v) {
-                      if (v == null || v.trim().isEmpty) return "Please enter email";
-                      final emailRegex = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
-                      if (!emailRegex.hasMatch(v)) return "Enter a valid email";
-                      return null;
-                    },
-                  ),
-                  buildFieldWithSpeech(
-                    label: "Password",
-                    controller: _passwordController,
-                    icon: Icons.lock,
-                    isPassword: true,
-                    validator: (v) => (v == null || v.isEmpty) ? "Please enter password" : null,
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: _submit,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade700,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                    ),
-                    child: TranslatedText(
-                      "Login",
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TranslatedText("Don't have an account?", style: GoogleFonts.poppins(color: Colors.black)),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const RegisterScreen()),
-                          );
-                        },
-                        child: TranslatedText("Register here", style: GoogleFonts.poppins(color: Colors.blue)),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Don't have an account?", style: GoogleFonts.poppins(color: Colors.black)),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                        );
+                      },
+                      child: Text("Register here", style: GoogleFonts.poppins(color: Colors.blue.shade700)),
+                    ),
+                  ],
+                )
+              ],
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
+
 }

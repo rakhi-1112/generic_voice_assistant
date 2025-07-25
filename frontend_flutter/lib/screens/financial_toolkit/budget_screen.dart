@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../api/toolkit_api.dart';
-import 'package:frontend_flutter/config/translated_text.dart';
 
 class BudgetScreen extends StatefulWidget {
   const BudgetScreen({super.key});
@@ -89,7 +88,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
             ),
 
             const SizedBox(height: 20),
-            TranslatedText("Expenses", style: GoogleFonts.poppins(fontWeight: FontWeight.w700, fontSize: 16, color: primaryColor)),
+            Text("Expenses", style: GoogleFonts.poppins(fontWeight: FontWeight.w700, fontSize: 16, color: primaryColor)),
 
             const SizedBox(height: 12),
             ...expenseControllers.asMap().entries.map((entry) {
@@ -195,7 +194,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
             ElevatedButton.icon(
               onPressed: _getSuggestions,
               icon: const Icon(Icons.auto_fix_high_rounded),
-              label: TranslatedText("Get AI Budget Suggestion", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+              label: Text("Get AI Budget Suggestion", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,
                 foregroundColor: Colors.white,
@@ -214,7 +213,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const TranslatedText("• ", style: TextStyle(fontSize: 16)),
+                        const Text("• ", style: TextStyle(fontSize: 16)),
                         Expanded(
                           child: Text(
                             item.toString(),

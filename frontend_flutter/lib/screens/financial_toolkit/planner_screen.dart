@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend_flutter/config/translated_text.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../api/toolkit_api.dart';
@@ -116,7 +115,7 @@ Future<void> _selectDate(int index) async {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TranslatedText(
+            Text(
               "Enter at least 6 months of historical data:",
               style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
             ),
@@ -139,7 +138,7 @@ Future<void> _selectDate(int index) async {
                             labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           ),
-                          child: TranslatedText(
+                          child: Text(
                             DateFormat('yyyy-MM-dd').format(item["ds"]),
                             style: GoogleFonts.poppins(),
                           ),
@@ -177,7 +176,7 @@ Future<void> _selectDate(int index) async {
             TextButton.icon(
               onPressed: _addRow,
               icon: const Icon(Icons.add_circle, color: Colors.green),
-              label: TranslatedText(
+              label: Text(
                 "Add Row",
                 style: GoogleFonts.poppins(
                   fontSize: 15,

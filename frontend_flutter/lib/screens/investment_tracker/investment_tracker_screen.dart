@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:frontend_flutter/config/translated_text.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 
@@ -68,9 +67,9 @@ class _InvestmentTrackerScreenState extends State<InvestmentTrackerScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF1F5FF),
       appBar: AppBar(
-        title: const TranslatedText(
+        title: Text(
           "📊 Investment Tracker",
-          style: TextStyle(fontWeight: FontWeight.w600),
+          style: GoogleFonts.poppins(color: Colors.black87, fontWeight: FontWeight.w600),
         ),
         backgroundColor: Colors.white,
         elevation: 1,
@@ -120,10 +119,7 @@ class _InvestmentTrackerScreenState extends State<InvestmentTrackerScreen> {
                       children: [
                         const Icon(Icons.filter_alt, color: Colors.deepPurple),
                         const SizedBox(width: 10),
-                        const TranslatedText(
-                          "Select Range:",
-                          style: TextStyle(fontSize: 14),
-                        ),
+                        Text("Select Range:", style: GoogleFonts.poppins(fontSize: 14)),
                         const SizedBox(width: 10),
                         DropdownButton<String>(
                           value: _selectedRange,
@@ -132,7 +128,7 @@ class _InvestmentTrackerScreenState extends State<InvestmentTrackerScreen> {
                           items: ['Weekly', 'Monthly', 'All Time'].map((range) {
                             return DropdownMenuItem(
                               value: range,
-                              child: TranslatedText(range),
+                              child: Text(range, style: GoogleFonts.poppins()),
                             );
                           }).toList(),
                           onChanged: (value) {
@@ -144,7 +140,7 @@ class _InvestmentTrackerScreenState extends State<InvestmentTrackerScreen> {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    TranslatedText(
+                    Text(
                       _selectedRange == 'Weekly'
                           ? "📆 Weekly Investment Overview"
                           : _selectedRange == 'Monthly'
@@ -164,19 +160,15 @@ class _InvestmentTrackerScreenState extends State<InvestmentTrackerScreen> {
                               sideTitles: SideTitles(
                                 showTitles: true,
                                 reservedSize: 42,
-                                getTitlesWidget: (value, _) => TranslatedText(
-                                  '₹${value.toInt()}',
-                                  style: const TextStyle(fontSize: 10),
-                                ),
+                                getTitlesWidget: (value, _) =>
+                                    Text('₹${value.toInt()}', style: const TextStyle(fontSize: 10)),
                               ),
                             ),
                             bottomTitles: AxisTitles(
                               sideTitles: SideTitles(
                                 showTitles: true,
-                                getTitlesWidget: (value, _) => TranslatedText(
-                                  "Q${value.toInt() + 1}",
-                                  style: const TextStyle(fontSize: 12),
-                                ),
+                                getTitlesWidget: (value, _) =>
+                                    Text("Q${value.toInt() + 1}", style: const TextStyle(fontSize: 12)),
                               ),
                             ),
                             topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -187,9 +179,9 @@ class _InvestmentTrackerScreenState extends State<InvestmentTrackerScreen> {
                       ),
                     ),
                     const SizedBox(height: 30),
-                    const TranslatedText(
+                    Text(
                       "🏦 Investment Areas",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
                     Expanded(
@@ -217,7 +209,7 @@ class _InvestmentTrackerScreenState extends State<InvestmentTrackerScreen> {
                       spacing: 10,
                       children: _investmentDistribution.keys.map((category) {
                         return Chip(
-                          label: TranslatedText(category, style: const TextStyle(color: Colors.white)),
+                          label: Text(category, style: const TextStyle(color: Colors.white)),
                           backgroundColor: _getColor(category),
                         );
                       }).toList(),
