@@ -18,7 +18,7 @@ class _TextChatScreenState extends State<TextChatScreen> {
 
   Future<String?> _getServerIp() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('server_ip') ?? 'http://192.168.1.39:5050';
+    return prefs.getString('server_ip') ?? 'http://192.168.1.38:5050';
   }
 
   Future<void> _submitPrompt() async {

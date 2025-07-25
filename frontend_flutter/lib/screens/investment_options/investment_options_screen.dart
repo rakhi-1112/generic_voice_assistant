@@ -100,7 +100,7 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
 
   Future<String?> getServerIp() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('server_ip') ?? 'http://192.168.1.39:5050';
+    return prefs.getString('server_ip') ?? 'http://192.168.1.38:5050';
   }
 
   Future<void> speak(String text) async {
@@ -323,12 +323,12 @@ Widget _buildRiskSlider() {
 
     final ageRaw = _ageGroupController.text.trim();
     final goalRaw = _investmentGoalController.text.trim();
-    final riskRaw = _investmentRiskController.text.trim();
+    // final riskRaw = _investmentRiskController.text.trim();
     final amountRaw = _investmentAmountController.text.trim();
 
     final age = int.tryParse(ageRaw);
     final goal = int.tryParse(goalRaw);
-    final risk = int.tryParse(riskRaw);
+    final risk = _riskValue.round();
     final amount = int.tryParse(amountRaw);
 
     final Map<String, dynamic> payload = {

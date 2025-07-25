@@ -3,6 +3,7 @@ from flask import Flask
 from flasgger import Swagger
 import firebase_admin
 from firebase_admin import credentials, firestore
+from flask_cors import CORS
 
 # Custom Imports
 from Routes import register_blueprints
@@ -16,6 +17,7 @@ app = Flask(__name__)
 @app.route('/create_app')
 def create_app():
     app = Flask(__name__)
+    CORS(app)
     register_blueprints(app)
 
     settings_manager = SettingsManager()
