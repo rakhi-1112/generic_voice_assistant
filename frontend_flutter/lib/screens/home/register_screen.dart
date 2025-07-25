@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/translated_text.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -50,7 +51,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<String?> getServerIp() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('server_ip') ?? 'http://192.168.1.38:5050';
+    return prefs.getString('server_ip') ?? 'http://192.168.1.39:5050';
   }
 
   Future<void> speak(String text) async {
@@ -168,6 +169,70 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 }
               },
             ),
+          ],
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+    Widget buildFieldWithOutSpeech({
+    required String label,
+    required TextEditingController controller,
+    required String? Function(String?) validator,
+    required IconData icon,
+    bool isPassword = false,
+    bool isNumeric = false,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 6.0),
+          child: TranslatedText(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: controller,
+                obscureText: isPassword,
+                keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
+                validator: validator,
+                decoration: InputDecoration(
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                  prefixIcon: Icon(icon, color: Colors.black),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Colors.black, width: 2),
+                  ),
+                  fillColor: Colors.transparent,
+                  filled: true,
+                ),
+                style: const TextStyle(color: Colors.black),
+              ),
+            ),
+            // IconButton(icon: const Icon(Icons.volume_up, color: Colors.black), onPressed: () => speak(label)),
+            // IconButton(
+            //   icon: Icon(_isRecording ? Icons.mic_off : Icons.mic, color: Colors.black),
+            //   onPressed: () async {
+            //     if (!_isRecording) {
+            //       await startRecording();
+            //     } else {
+            //       final transcript = await stopRecordingAndTranscribe(isNumeric: isNumeric);
+            //       if (transcript != null) controller.text = transcript;
+            //     }
+            //   },
+            // ),
           ],
         ),
         const SizedBox(height: 16),
@@ -293,107 +358,167 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const TranslatedText("Register")),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              buildFieldWithSpeech(
-                label: "Name",
-                controller: _nameController,
-                icon: Icons.person,
-                validator: (v) => (v == null || v.trim().isEmpty) ? "Please enter name" : null,
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    extendBodyBehindAppBar: true,
+    appBar: PreferredSize(
+      preferredSize: const Size.fromHeight(60),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(20)),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.white.withOpacity(0.2), Colors.blue.withOpacity(0.1)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            centerTitle: true,
+            title: Text(
+              "Register",
+              style: GoogleFonts.poppins(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue.shade900,
               ),
-              buildFieldWithSpeech(
-                label: "Age",
-                controller: _ageController,
-                icon: Icons.cake,
-                isNumeric: true,
-                validator: (v) {
-                  final age = int.tryParse(v ?? '');
-                  if (age == null || age < 0 || age > 150) return "Enter a valid age (0–150)";
-                  return null;
-                },
-              ),
-              buildGenderDropdown(),
-              buildFieldWithSpeech(
-                label: "Mobile Number",
-                controller: _phoneController,
-                icon: Icons.phone,
-                isNumeric: true,
-                validator: (v) {
-                  final phone = v?.trim() ?? '';
-                  final phoneRegex = RegExp(r'^\d{10}$'); // exactly 10 digits, no country code
-                  if (!phoneRegex.hasMatch(phone)) {
-                    return ('Enter valid 10-digit mobile number (without country code)');
-                  }
-                  return null;
-                },
-              ),
-              buildFieldWithSpeech(
-                label: "Email",
-                controller: _emailController,
-                icon: Icons.email,
-                validator: (v) {
-                  if (v == null || v.trim().isEmpty) return "Please enter email";
-                  final emailRegex = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
-                  if (!emailRegex.hasMatch(v)) return "Enter a valid email";
-                  return null;
-                },
-              ),
-              buildFieldWithSpeech(
-                label: "Password",
-                controller: _passwordController,
-                icon: Icons.lock,
-                isPassword: true,
-                validator: (v) => (v == null || v.length < 6) ? "Password must be at least 6 characters" : null,
-              ),
-              buildFieldWithSpeech(
-                label: "Confirm Password",
-                controller: _confirmPasswordController,
-                icon: Icons.lock_outline,
-                isPassword: true,
-                validator: (v) => (v == null || v.length < 6) ? "Confirm password must be at least 6 characters" : null,
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _submit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.indigo,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                ),
-                child: const TranslatedText(
-                  "Register",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-              ),
-              const SizedBox(height: 16),
-              // Link to Login Screen
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const TranslatedText("Already have an account? "),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const LoginScreen()),
-                      );
-                    },
-                    child: const TranslatedText("Login"),
-                  ),
-                ],
-              ),
-            ],
+            ),
+            foregroundColor: Colors.black,
+            automaticallyImplyLeading: false,
           ),
         ),
       ),
-    );
-  }
+    ),
+    body: Stack(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.white, Color(0xFFE3F2FD)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 80),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: [
+                Text(
+                  "Create your account 🚀",
+                  style: GoogleFonts.poppins(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.blue.shade900,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                buildFieldWithSpeech(
+                  label: "Name",
+                  controller: _nameController,
+                  icon: Icons.person,
+                  validator: (v) => (v == null || v.trim().isEmpty) ? "Please enter name" : null,
+                ),
+                buildFieldWithSpeech(
+                  label: "Age",
+                  controller: _ageController,
+                  icon: Icons.cake,
+                  isNumeric: true,
+                  validator: (v) {
+                    final age = int.tryParse(v ?? '');
+                    if (age == null || age < 0 || age > 150) return "Enter a valid age (0–150)";
+                    return null;
+                  },
+                ),
+                buildGenderDropdown(),
+                buildFieldWithSpeech(
+                  label: "Mobile Number",
+                  controller: _phoneController,
+                  icon: Icons.phone,
+                  isNumeric: true,
+                  validator: (v) {
+                    final phone = v?.trim() ?? '';
+                    final phoneRegex = RegExp(r'^\d{10}$');
+                    if (!phoneRegex.hasMatch(phone)) {
+                      return ('Enter valid 10-digit mobile number');
+                    }
+                    return null;
+                  },
+                ),
+                buildFieldWithSpeech(
+                  label: "Email",
+                  controller: _emailController,
+                  icon: Icons.email,
+                  validator: (v) {
+                    if (v == null || v.trim().isEmpty) return "Please enter email";
+                    final emailRegex = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+                    if (!emailRegex.hasMatch(v)) return "Enter a valid email";
+                    return null;
+                  },
+                ),
+                buildFieldWithOutSpeech(
+                  label: "Password",
+                  controller: _passwordController,
+                  icon: Icons.lock,
+                  isPassword: true,
+                  validator: (v) => (v == null || v.length < 6) ? "Password must be at least 6 characters" : null,
+                ),
+                buildFieldWithOutSpeech(
+                  label: "Confirm Password",
+                  controller: _confirmPasswordController,
+                  icon: Icons.lock_outline,
+                  isPassword: true,
+                  validator: (v) => (v == null || v.length < 6) ? "Confirm password must be at least 6 characters" : null,
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: _submit,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.shade700,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  ),
+                  child: Text(
+                    "Register",
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Already have an account?", style: GoogleFonts.poppins()),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => const LoginScreen()),
+                        );
+                      },
+                      child: Text(
+                        "Login",
+                        style: GoogleFonts.poppins(color: Colors.blue.shade700),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 }
