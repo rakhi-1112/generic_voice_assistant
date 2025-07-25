@@ -19,8 +19,8 @@ class FinancialToolkitMenu extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: primaryBlue,
-        title: TranslatedText(
-          "🧰 SME Financial Toolkit",
+        title: Text(
+          "🧰 Financial Toolkit",
           style: GoogleFonts.poppins(
             color: Colors.white,
             fontWeight: FontWeight.w600,

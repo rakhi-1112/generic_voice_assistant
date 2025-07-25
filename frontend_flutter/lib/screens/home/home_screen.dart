@@ -128,7 +128,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       _buildHomeCard(
                         context,
-                        title: "🧰 SME Toolkit",
+                        title: "🧰 Financial Toolkit",
                         description: "Manage and grow your business",
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FinancialToolkitMenu())),
                         textStyle: textStyle,
@@ -143,8 +143,8 @@ class HomeScreen extends StatelessWidget {
                       _buildHomeCard(
                         context,
                         title: "🎮 Money Quest",
-                        description: "Financial literacy through fun",
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MoneyQuestGameScreen())),
+                        description: "Test your financial IQ",
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => MoneyQuestGameScreen())),
                         textStyle: textStyle,
                       ),
                       _buildHomeCard(
@@ -173,7 +173,7 @@ class HomeScreen extends StatelessWidget {
     required TextStyle textStyle,
   }) {
     return GlassmorphicContainer(
-      width: 260,
+      width: 300,
       height: 160,
       borderRadius: 24,
       blur: 20,
