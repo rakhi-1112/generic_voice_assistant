@@ -100,7 +100,7 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
 
   Future<String?> getServerIp() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('server_ip') ?? 'http://192.168.1.38:5050';
+    return prefs.getString('server_ip') ?? 'http://192.168.1.39:5050';
   }
 
   Future<void> speak(String text) async {
@@ -656,11 +656,12 @@ Widget build(BuildContext context) {
                         child: ElevatedButton(
                           onPressed: _generateStrategy,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF1565C0),
+                            backgroundColor: const Color.fromARGB(255, 28, 81, 165),
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            textStyle: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
                           ),
-                          child: const Text("Get My Investment Plan", style: TextStyle(color: Colors.white)),
+                          child: const Text("Get My Investment Plan", style: TextStyle(fontSize: 16, color: Colors.white)),
                         ).animate().fadeIn().slideY(begin: 0.3),
                       ),
                   ],
