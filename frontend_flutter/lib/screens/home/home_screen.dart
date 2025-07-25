@@ -128,7 +128,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       _buildHomeCard(
                         context,
-                        title: "🧰 Financial Toolkit",
+                        title: "🧰 Financial Toolkit for SME",
                         description: "Manage and grow your business",
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FinancialToolkitMenu())),
                         textStyle: textStyle,

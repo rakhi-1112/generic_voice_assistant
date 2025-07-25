@@ -177,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Login successful!")),
+          const SnackBar(content: TranslatedText("Login successful!")),
         );
 
         Future.delayed(const Duration(seconds: 1), () {

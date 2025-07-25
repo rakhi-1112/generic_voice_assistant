@@ -470,7 +470,7 @@ Widget build(BuildContext context) {
             key: _formKey,
             child: ListView(
               children: [
-                Text(
+                TranslatedText(
                   "Create your account 🚀",
                   style: GoogleFonts.poppins(
                     fontSize: 26,
@@ -545,7 +545,7 @@ Widget build(BuildContext context) {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                   ),
-                  child: Text(
+                  child: TranslatedText(
                     "Register",
                     style: GoogleFonts.poppins(
                       color: Colors.white,
@@ -558,7 +558,7 @@ Widget build(BuildContext context) {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Already have an account?", style: GoogleFonts.poppins()),
+                    TranslatedText("Already have an account?", style: GoogleFonts.poppins()),
                     TextButton(
                       onPressed: () {
                         Navigator.pushReplacement(
