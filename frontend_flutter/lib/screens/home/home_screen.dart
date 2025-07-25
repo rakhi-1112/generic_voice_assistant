@@ -220,65 +220,121 @@ class AppSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textStyle = GoogleFonts.poppins(
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      color: Colors.blue.shade900,
+    );
+
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
-            child: TranslatedText("Menu", style: TextStyle(color: Colors.white)),
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.white, Color(0xFFE3F2FD)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          ListTile(
-            leading: const Icon(Icons.home),
-            title: const TranslatedText("Home"),
-            onTap: () => Navigator.of(context).pop(),
-          ),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const TranslatedText("Settings"),
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SettingsScreen())),
-          ),
-          ListTile(
-            leading: const Icon(Icons.attach_money),
-            title: const Text("Investment Options"),
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const InvestmentOptionsScreen())),
-          ),
-          ListTile(
-            leading: const Icon(Icons.build),
-            title: const Text("Financial Toolkit"),
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FinancialToolkitMenu())),
-          ),
-          ListTile(
-            leading: const Icon(Icons.bar_chart),
-            title: const Text("Investment Tracker"),
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const InvestmentTrackerScreen())),
-          ),
-         ListTile(
-          leading: const Icon(Icons.videogame_asset),
-          title: const Text("Money Quest Game"),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const MoneyQuestGameScreen(),
-            ));
-          },
         ),
-        const Divider(),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const TranslatedText("Logout"),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            GlassmorphicContainer(
+              width: double.infinity,
+              height: 120,
+              borderRadius: 0,
+              blur: 20,
+              alignment: Alignment.center,
+              border: 0,
+              linearGradient: LinearGradient(
+                colors: [
+                  Colors.white.withOpacity(0.2),
+                  Colors.blue.withOpacity(0.1),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderGradient: LinearGradient(
+                colors: [
+                  Colors.white.withOpacity(0.3),
+                  Colors.blue.withOpacity(0.3),
+                ],
+              ),
+              child: Center(
+                child: TranslatedText(
+                  "Menu",
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade900,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            _buildDrawerItem(
+              icon: Icons.home,
+              label: "Home",
+              onTap: () => Navigator.of(context).pop(),
+              style: textStyle,
+            ),
+            _buildDrawerItem(
+              icon: Icons.settings,
+              label: "Settings",
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SettingsScreen())),
+              style: textStyle,
+            ),
+            _buildDrawerItem(
+              icon: Icons.attach_money,
+              label: "Investment Options",
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const InvestmentOptionsScreen())),
+              style: textStyle,
+            ),
+            _buildDrawerItem(
+              icon: Icons.build,
+              label: "Financial Toolkit",
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FinancialToolkitMenu())),
+              style: textStyle,
+            ),
+            _buildDrawerItem(
+              icon: Icons.bar_chart,
+              label: "Investment Tracker",
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const InvestmentTrackerScreen())),
+              style: textStyle,
+            ),
+            _buildDrawerItem(
+              icon: Icons.videogame_asset,
+              label: "Money Quest Game",
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const MoneyQuestGameScreen())),
+              style: textStyle,
+            ),
+            const Divider(thickness: 1, indent: 16, endIndent: 16),
+            _buildDrawerItem(
+              icon: Icons.logout,
+              label: "Logout",
               onTap: () async {
                 Navigator.of(context).pop();
-
                 await FirebaseAuth.instance.signOut();
-
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/login',
-                  (route) => false,
-                );
+                Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
               },
+              style: textStyle,
             ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+    required TextStyle style,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.blue.shade800),
+      title: Text(label, style: style),
+      onTap: onTap,
+      hoverColor: Colors.blue.shade50.withOpacity(0.3),
     );
   }
 }
