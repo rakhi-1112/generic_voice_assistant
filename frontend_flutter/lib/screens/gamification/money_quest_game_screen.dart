@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_flutter/config/translated_text.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:glassmorphism/glassmorphism.dart';
@@ -130,7 +131,7 @@ class _MoneyQuestGameScreenState extends State<MoneyQuestGameScreen>
               children: [
                 Lottie.asset(animationAsset, width: 160, repeat: false),
                 const SizedBox(height: 16),
-                Text(
+                TranslatedText(
                   message,
                   style: GoogleFonts.poppins(
                     fontSize: 22,
@@ -140,7 +141,7 @@ class _MoneyQuestGameScreenState extends State<MoneyQuestGameScreen>
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 10),
-                Text(
+                TranslatedText(
                   "Your Financial IQ Score: $_score",
                   style: GoogleFonts.poppins(fontSize: 16, color: Colors.black87),
                 ),
@@ -148,7 +149,7 @@ class _MoneyQuestGameScreenState extends State<MoneyQuestGameScreen>
                 ElevatedButton.icon(
                   onPressed: _restartGame,
                   icon: const Icon(Icons.restart_alt),
-                  label: const Text("Restart"),
+                  label: const TranslatedText("Restart"),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0A3D91),
                     foregroundColor: Colors.white,
@@ -179,7 +180,7 @@ class _MoneyQuestGameScreenState extends State<MoneyQuestGameScreen>
             backgroundColor: Colors.blue.shade100,
           ),
           const SizedBox(height: 20),
-          Text(
+          TranslatedText(
             scenario['question'],
             style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
           ),
@@ -192,7 +193,7 @@ class _MoneyQuestGameScreenState extends State<MoneyQuestGameScreen>
                 borderRadius: BorderRadius.circular(12),
               ),
               child: ListTile(
-                title: Text(option['text'],
+                title: TranslatedText(option['text'],
                     style: GoogleFonts.poppins(fontSize: 15, color: Colors.black87)),
                 trailing: const Icon(Icons.arrow_forward_ios, color: Color(0xFF0A3D91)),
                 onTap: () => _selectOption(option['score']),
@@ -217,7 +218,7 @@ class _MoneyQuestGameScreenState extends State<MoneyQuestGameScreen>
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("🎯 Money Quest",
+        title: TranslatedText("🎯 Money Quest",
             style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Colors.black87)),
         backgroundColor: Colors.white,
         elevation: 1,

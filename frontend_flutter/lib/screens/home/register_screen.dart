@@ -378,7 +378,7 @@ Widget build(BuildContext context) {
             backgroundColor: Colors.transparent,
             elevation: 0,
             centerTitle: true,
-            title: Text(
+            title: TranslatedText(
               "Register",
               style: GoogleFonts.poppins(
                 fontSize: 22,
