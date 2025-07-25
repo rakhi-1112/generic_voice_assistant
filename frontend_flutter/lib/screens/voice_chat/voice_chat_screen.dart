@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:frontend_flutter/config/translated_text.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -142,7 +143,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
   void _showError(String message) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.red),
+      SnackBar(content: TranslatedText(message), backgroundColor: Colors.red),
     );
   }
 
@@ -162,7 +163,7 @@ Widget build(BuildContext context) {
       backgroundColor: Colors.white,
       elevation: 0,
       centerTitle: true,
-      title: Text(
+      title: TranslatedText(
         'Voice Chat Assistant',
         style: GoogleFonts.poppins(
           color: const Color(0xFF0A3D91),
@@ -195,7 +196,7 @@ Widget build(BuildContext context) {
                 if (_isProcessing) ...[
                   const CircularProgressIndicator(),
                   const SizedBox(height: 20),
-                  Text(
+                  TranslatedText(
                     'Processing...',
                     style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
                   ),
@@ -214,7 +215,7 @@ Widget build(BuildContext context) {
                       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 18),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    child: Text(
+                    child: TranslatedText(
                       _isRecording ? 'STOP & SEND' : 'START RECORDING',
                       style: GoogleFonts.poppins(fontSize: 16, color: Colors.white),
                     ),
@@ -223,7 +224,7 @@ Widget build(BuildContext context) {
                 if (_isPlaying) ...[
                   const Icon(Icons.volume_up, size: 64, color: Colors.green),
                   const SizedBox(height: 20),
-                  Text(
+                  TranslatedText(
                     'Playing response...',
                     style: GoogleFonts.poppins(fontSize: 18),
                   ),
@@ -238,7 +239,7 @@ Widget build(BuildContext context) {
                       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    child: Text(
+                    child: TranslatedText(
                       'STOP PLAYBACK',
                       style: GoogleFonts.poppins(fontSize: 16, color: Colors.white),
                     ),
@@ -246,14 +247,14 @@ Widget build(BuildContext context) {
                 ],
                 if (_apiResponsePath != null && !_isProcessing && !_isPlaying) ...[
                   const SizedBox(height: 40),
-                  Text(
+                  TranslatedText(
                     'Response Ready:',
                     style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton.icon(
                     icon: const Icon(Icons.play_arrow, size: 26),
-                    label: Text(
+                    label: TranslatedText(
                       'PLAY RESPONSE',
                       style: GoogleFonts.poppins(fontSize: 16),
                     ),
