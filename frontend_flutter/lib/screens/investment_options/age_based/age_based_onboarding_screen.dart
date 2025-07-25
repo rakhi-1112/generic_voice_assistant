@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:frontend_flutter/screens/investment_options/age_based/ActionPlanScreen.dart';
+import 'package:frontend_flutter/screens/investment_options/age_based/recommendation_data.dart';
 import 'package:frontend_flutter/screens/investment_options/age_based/utils/age_group_engine.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -43,13 +45,34 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
     setState(() {});
   }
 
-  void nextStep() {
+  void nextStep1() {
     if (currentStep < 2) {
       setState(() => currentStep++);
     } else {
       widget.onComplete(onboardingData);
     }
   }
+
+
+void nextStep(BuildContext context, String goal) {
+  // final plan = financialRecommendations[goal] ?? financialRecommendations["Other"];
+  // final plan = financialRecommendations[goal] ?? const {
+  //   "Mutual Funds": "30%",
+  //   "Fixed Deposits": "30%",
+  //   "SIPs": "40%",
+  // };
+
+  final goalFormatted = goal[0].toUpperCase() + goal.substring(1); // Capitalize
+final plan = financialRecommendations[goalFormatted] ?? financialRecommendations["Other"]!;
+
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ActionPlanScreen(goal: goal, plan: plan),
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -260,7 +283,7 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
           Padding(
             padding: const EdgeInsets.only(top: 20.0),
             child: ElevatedButton(
-              onPressed: nextStep,
+              onPressed: nextStep1,
               child: const Text("Continue ✨"),
             ).animate().scale().fadeIn(),
           ),
@@ -320,7 +343,9 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
           Padding(
             padding: const EdgeInsets.only(top: 20.0),
             child: ElevatedButton(
-              onPressed: nextStep,
+              onPressed: () {
+    nextStep(context, onboardingData['primaryGoal']);
+  },
               child: const Text("Create My Action Plan! 🔥"),
             ).animate().scale().fadeIn(),
           ),
