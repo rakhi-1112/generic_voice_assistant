@@ -1,9 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:frontend_flutter/screens/investment_options/age_based/ActionPlanScreen.dart';
+import 'package:frontend_flutter/screens/investment_options/age_based/recommendation_data.dart';
 import 'package:frontend_flutter/screens/investment_options/age_based/utils/age_group_engine.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:frontend_flutter/config/translated_text.dart';
 
 class AgeBasedOnboardingScreen extends StatefulWidget {
   final Function(Map<String, dynamic>) onComplete;
@@ -44,7 +45,7 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
     setState(() {});
   }
 
-  void nextStep() {
+  void nextStep1() {
     if (currentStep < 2) {
       setState(() => currentStep++);
     } else {
@@ -52,14 +53,35 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
     }
   }
 
+
+void nextStep(BuildContext context, String goal) {
+  // final plan = financialRecommendations[goal] ?? financialRecommendations["Other"];
+  // final plan = financialRecommendations[goal] ?? const {
+  //   "Mutual Funds": "30%",
+  //   "Fixed Deposits": "30%",
+  //   "SIPs": "40%",
+  // };
+
+  final goalFormatted = goal[0].toUpperCase() + goal.substring(1); // Capitalize
+final plan = financialRecommendations[goalFormatted] ?? financialRecommendations["Other"]!;
+
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ActionPlanScreen(goal: goal, plan: plan),
+    ),
+  );
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: TranslatedText(
-          'onboarding.title',
+        title: Text(
+          'AI Powered Financial Coach',
           style: GoogleFonts.poppins(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -67,6 +89,7 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
         ),
         centerTitle: true,
       ),
+
       body: Stack(
         children: [
           _buildAnimatedBlobBackground(),
@@ -123,19 +146,22 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
           key: key,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const TranslatedText("onboarding.emoji", style: TextStyle(fontSize: 80))
+            const Text("🐬", style: TextStyle(fontSize: 80))
                 .animate()
                 .fade(duration: 600.ms)
                 .scale(duration: 800.ms)
                 .then()
                 .shake(hz: 1, curve: Curves.easeOut),
             const SizedBox(height: 20),
-            const TranslatedText("onboarding.app_name", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold))
+            const Text("dolFin", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold))
                 .animate()
                 .fadeIn(duration: 600.ms, delay: 400.ms),
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-              child: TranslatedText("onboarding.tagline", textAlign: TextAlign.center),
+              child: Text(
+                "Your age-smart financial coach that adapts to your generation's money style",
+                textAlign: TextAlign.center,
+              ),
             ).animate().fadeIn(delay: 600.ms),
             const SizedBox(height: 30),
             Wrap(
@@ -143,9 +169,9 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
               runSpacing: 16,
               alignment: WrapAlignment.center,
               children: [
-                _ageCard('onboarding.genz', '🎓', '18-27', 22),
-                _ageCard('onboarding.millennial', '💼', '28-43', 35),
-                _ageCard('onboarding.elderly', '🏡', '44+', 50),
+                _ageCard('Gen Z', '🎓', '18-27', 22),
+                _ageCard('Millennial', '💼', '28-43', 35),
+                _ageCard('Experienced', '🏡', '44+', 50),
               ].animate(interval: 300.ms),
             ),
           ],
@@ -159,7 +185,7 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
     }
   }
 
-  Widget _ageCard(String labelKey, String emoji, String range, int age) {
+  Widget _ageCard(String label, String emoji, String range, int age) {
     return GestureDetector(
       onTap: () => handleAgeSelect(age),
       child: Container(
@@ -184,7 +210,7 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
                 .then(delay: 200.ms)
                 .shake(hz: 2),
             const SizedBox(height: 10),
-            TranslatedText(labelKey, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+            Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
             Text(range),
           ],
         ),
@@ -199,26 +225,38 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
       {
         'value': 'surplus',
         'emoji': '😊',
-        'labelKey': 'onboarding.financial.surplus.${ageGroup!.name}',
+        'label': ageGroup == AgeGroup.genz
+            ? "I've got money left over each month 💰"
+            : ageGroup == AgeGroup.millennial
+                ? "Building wealth steadily 📈"
+                : "Living comfortably within my means 🏡",
       },
       {
         'value': 'breaking_even',
         'emoji': '😐',
-        'labelKey': 'onboarding.financial.breaking_even.${ageGroup!.name}',
+        'label': ageGroup == AgeGroup.genz
+            ? "Just getting by 😅"
+            : ageGroup == AgeGroup.millennial
+                ? "Managing but not much left ⚖️"
+                : "Covering essentials & some extras 📊",
       },
       {
         'value': 'deficit',
         'emoji': '😓',
-        'labelKey': 'onboarding.financial.deficit.${ageGroup!.name}',
+        'label': ageGroup == AgeGroup.genz
+            ? "Struggling to make ends meet 😰"
+            : ageGroup == AgeGroup.millennial
+                ? "Expenses > Income 😓"
+                : "Challenging to cover all costs 😔",
       },
     ];
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        TranslatedText(profile.displayName, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+        Text(profile.displayName, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
         const SizedBox(height: 12),
-        const TranslatedText("onboarding.question.financial_status"),
+        const Text("What's your current financial situation?"),
         const SizedBox(height: 24),
         ...options.map((opt) => GestureDetector(
               onTap: () => updateData('financialSituation', opt['value']),
@@ -236,9 +274,7 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
                   children: [
                     Text(opt['emoji']!, style: const TextStyle(fontSize: 32)),
                     const SizedBox(width: 16),
-                    Expanded(
-                      child: TranslatedText(opt['labelKey']!, style: const TextStyle(fontSize: 16)),
-                    ),
+                    Expanded(child: Text(opt['label']!, style: const TextStyle(fontSize: 16))),
                   ],
                 ),
               ),
@@ -247,8 +283,8 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
           Padding(
             padding: const EdgeInsets.only(top: 20.0),
             child: ElevatedButton(
-              onPressed: nextStep,
-              child: const TranslatedText("onboarding.button.continue"),
+              onPressed: nextStep1,
+              child: const Text("Continue ✨"),
             ).animate().scale().fadeIn(),
           ),
       ],
@@ -258,24 +294,32 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
   Widget _buildPrimaryGoalStep() {
     final profile = getAgeGroupProfile(ageGroup!);
 
+    final goalMap = {
+      'debt': {
+        'label': ageGroup == AgeGroup.genz ? 'Crush student loans 🎓' : 'Pay off debt 💳',
+        'emoji': '💳'
+      },
+      'emergency_fund': {'label': 'Build emergency fund 🚨', 'emoji': '🚨'},
+      'house': {
+        'label': ageGroup == AgeGroup.millennial ? 'Buy my dream home 🏡' : 'Real estate 🏘️',
+        'emoji': '🏡'
+      },
+      'retirement': {'label': 'Secure retirement 👴', 'emoji': '👴'},
+      'travel': {
+        'label': ageGroup == AgeGroup.genz ? 'Travel adventures ✈️' : 'Plan vacations 🌴',
+        'emoji': '✈️'
+      },
+      'education': {'label': 'Invest in education 📚', 'emoji': '📚'},
+      'business': {'label': 'Start business 🚀', 'emoji': '🚀'}
+    };
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const TranslatedText("onboarding.question.primary_goal", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+        const Text("What's your main financial goal?", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
         const SizedBox(height: 20),
         ...profile.commonGoals.map((goal) {
-          final emoji = {
-            'debt': '💳',
-            'emergency_fund': '🚨',
-            'house': '🏡',
-            'retirement': '👴',
-            'travel': '✈️',
-            'education': '📚',
-            'business': '🚀',
-          }[goal]!;
-
-          final labelKey = 'onboarding.goal.${goal}.${ageGroup!.name}';
-
+          final config = goalMap[goal]!;
           return GestureDetector(
             onTap: () => updateData('primaryGoal', goal),
             child: Container(
@@ -287,9 +331,9 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
               ),
               child: Row(
                 children: [
-                  Text(emoji, style: const TextStyle(fontSize: 32)),
+                  Text(config['emoji']!, style: const TextStyle(fontSize: 32)),
                   const SizedBox(width: 16),
-                  Expanded(child: TranslatedText(labelKey, style: const TextStyle(fontSize: 16))),
+                  Expanded(child: Text(config['label']!, style: const TextStyle(fontSize: 16))),
                 ],
               ),
             ),
@@ -299,8 +343,10 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
           Padding(
             padding: const EdgeInsets.only(top: 20.0),
             child: ElevatedButton(
-              onPressed: nextStep,
-              child: const TranslatedText("onboarding.button.create_plan"),
+              onPressed: () {
+    nextStep(context, onboardingData['primaryGoal']);
+  },
+              child: const Text("Create My Action Plan! 🔥"),
             ).animate().scale().fadeIn(),
           ),
       ],
