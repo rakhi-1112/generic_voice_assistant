@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:frontend_flutter/config/translated_text.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -84,7 +86,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
 
   Future<String?> getServerIp() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('server_ip') ?? 'http://192.168.1.3:5000';
+    return prefs.getString('server_ip') ?? 'http://192.168.1.39:5050';
   }
 
   Future<void> _sendToApi(String audioPath) async {
@@ -141,7 +143,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
   void _showError(String message) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.red),
+      SnackBar(content: TranslatedText(message), backgroundColor: Colors.red),
     );
   }
 
@@ -153,82 +155,124 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Voice Chat Assistant')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Status indicators
-            if (_isProcessing) ...[
-              const CircularProgressIndicator(),
-              const SizedBox(height: 20),
-              const Text('Processing...', style: TextStyle(fontSize: 18)),
-              const SizedBox(height: 40),
-            ],
-            
-            // Main recording UI
-            if (!_isProcessing && !_isPlaying) ...[
-              Icon(
-                _isRecording ? Icons.mic : Icons.mic_none,
-                size: 64,
-                color: _isRecording ? Colors.red : Colors.blue,
-              ),
-              const SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: _isRecording ? _stopAndSend : _startRecording,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                  backgroundColor: _isRecording ? Colors.red : Colors.blue,
-                ),
-                child: Text(
-                  _isRecording ? 'STOP & SEND' : 'START RECORDING',
-                  style: const TextStyle(fontSize: 18, color: Colors.white),
-                ),
-              ),
-            ],
-            
-            // Playback UI
-            if (_isPlaying) ...[
-              const Icon(Icons.volume_up, size: 64, color: Colors.green),
-              const SizedBox(height: 20),
-              const Text('Playing response...', style: TextStyle(fontSize: 18)),
-              const SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: () async {
-                  await _player.stop();
-                  setState(() => _isPlaying = false);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                ),
-                child: const Text(
-                  'STOP PLAYBACK',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
-              ),
-            ],
-            
-            // Response playback control
-            if (_apiResponsePath != null && !_isProcessing && !_isPlaying) ...[
-              const SizedBox(height: 40),
-              const Text('Response Ready:', style: TextStyle(fontSize: 18)),
-              const SizedBox(height: 20),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.play_arrow, size: 30),
-                label: const Text('PLAY RESPONSE', style: TextStyle(fontSize: 18)),
-                onPressed: () => _playResponse(_apiResponsePath!),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 76, 155, 175),
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                ),
-              ),
-            ],
-          ],
+Widget build(BuildContext context) {
+  return Scaffold(
+    extendBodyBehindAppBar: true,
+    backgroundColor: Colors.white,
+    appBar: AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      centerTitle: true,
+      title: TranslatedText(
+        'Voice Chat Assistant',
+        style: GoogleFonts.poppins(
+          color: const Color(0xFF0A3D91),
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
         ),
       ),
-    );
-  }
+    ),
+    body: Stack(
+      children: [
+        // Gradient background
+        Positioned.fill(
+          child: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.white, Color(0xFFE3F2FD)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+        ),
+        // Main content
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (_isProcessing) ...[
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 20),
+                  TranslatedText(
+                    'Processing...',
+                    style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
+                  ),
+                ],
+                if (!_isProcessing && !_isPlaying) ...[
+                  Icon(
+                    _isRecording ? Icons.mic : Icons.mic_none,
+                    size: 72,
+                    color: _isRecording ? Colors.red : const Color(0xFF0A3D91),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: _isRecording ? _stopAndSend : _startRecording,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _isRecording ? Colors.red : const Color(0xFF0A3D91),
+                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 18),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: TranslatedText(
+                      _isRecording ? 'STOP & SEND' : 'START RECORDING',
+                      style: GoogleFonts.poppins(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                ],
+                if (_isPlaying) ...[
+                  const Icon(Icons.volume_up, size: 64, color: Colors.green),
+                  const SizedBox(height: 20),
+                  TranslatedText(
+                    'Playing response...',
+                    style: GoogleFonts.poppins(fontSize: 18),
+                  ),
+                  const SizedBox(height: 30),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await _player.stop();
+                      setState(() => _isPlaying = false);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: TranslatedText(
+                      'STOP PLAYBACK',
+                      style: GoogleFonts.poppins(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                ],
+                if (_apiResponsePath != null && !_isProcessing && !_isPlaying) ...[
+                  const SizedBox(height: 40),
+                  TranslatedText(
+                    'Response Ready:',
+                    style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.play_arrow, size: 26),
+                    label: TranslatedText(
+                      'PLAY RESPONSE',
+                      style: GoogleFonts.poppins(fontSize: 16),
+                    ),
+                    onPressed: () => _playResponse(_apiResponsePath!),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1565C0),
+                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_flutter/config/translated_text.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,7 +19,7 @@ class _TextChatScreenState extends State<TextChatScreen> {
 
   Future<String?> _getServerIp() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('server_ip') ?? 'http://192.168.1.3:5000';
+    return prefs.getString('server_ip') ?? 'http://192.168.1.39:5050';
   }
 
   Future<void> _submitPrompt() async {
@@ -59,7 +60,7 @@ class _TextChatScreenState extends State<TextChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Text Chat")),
+      appBar: AppBar(title: const TranslatedText("Text Chat")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -85,7 +86,7 @@ class _TextChatScreenState extends State<TextChatScreen> {
                         height: 20,
                         child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                       )
-                    : const Text("Submit"),
+                    : const TranslatedText("Submit"),
               ),
             ),
             const SizedBox(height: 24),

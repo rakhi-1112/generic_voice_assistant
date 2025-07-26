@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:frontend_flutter/config/translated_text.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -33,6 +35,46 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
   String _investmentFrequency = 'Recurring';
   String _username = '';
   bool _formSaved = false;
+  String? _selectedState;
+  final List<String> _indianStates = [
+    'Andhra Pradesh',
+    'Arunachal Pradesh',
+    'Assam',
+    'Bihar',
+    'Chhattisgarh',
+    'Goa',
+    'Gujarat',
+    'Haryana',
+    'Himachal Pradesh',
+    'Jharkhand',
+    'Karnataka',
+    'Kerala',
+    'Madhya Pradesh',
+    'Maharashtra',
+    'Manipur',
+    'Meghalaya',
+    'Mizoram',
+    'Nagaland',
+    'Odisha',
+    'Punjab',
+    'Rajasthan',
+    'Sikkim',
+    'Tamil Nadu',
+    'Telangana',
+    'Tripura',
+    'Uttar Pradesh',
+    'Uttarakhand',
+    'West Bengal',
+    'Delhi',
+    'Jammu and Kashmir',
+    'Ladakh',
+    'Andaman and Nicobar Islands',
+    'Chandigarh',
+    'Dadra and Nagar Haveli and Daman and Diu',
+    'Lakshadweep',
+    'Puducherry'
+];
+
 
   final AudioRecorder _recorder = AudioRecorder();
   bool _isRecording = false;
@@ -59,7 +101,7 @@ class _InvestmentOptionsScreenState extends State<InvestmentOptionsScreen> {
 
   Future<String?> getServerIp() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('server_ip') ?? 'http://192.168.1.3:5000';
+    return prefs.getString('server_ip') ?? 'http://192.168.1.38:5000';
   }
 
   Future<void> speak(String text) async {
@@ -228,7 +270,7 @@ Widget _buildRiskSlider() {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(
+      TranslatedText(
         "How Much Risk % Can You Take? (0-100)",
         style: GoogleFonts.poppins(
           fontSize: 16,
@@ -240,9 +282,9 @@ Widget _buildRiskSlider() {
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("Low", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
-          Text("Medium", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
-          Text("High", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
+          TranslatedText("Low", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
+          TranslatedText("Medium", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
+          TranslatedText("High", style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600)),
         ],
       ),
       Slider(
@@ -280,14 +322,24 @@ Widget _buildRiskSlider() {
 
     if (!_formKey.currentState!.validate()) return;
 
+    final ageRaw = _ageGroupController.text.trim();
+    final goalRaw = _investmentGoalController.text.trim();
+    // final riskRaw = _investmentRiskController.text.trim();
+    final amountRaw = _investmentAmountController.text.trim();
+
+    final age = int.tryParse(ageRaw);
+    final goal = int.tryParse(goalRaw);
+    final risk = _riskValue.round();
+    final amount = int.tryParse(amountRaw);
+
     final Map<String, dynamic> payload = {
       "username": _username,
-      "age_group": int.parse(_ageGroupController.text),
+      "age_group": age,
       "inv_frequency": _investmentFrequency,
-      "inv_goal": double.parse(_investmentGoalController.text),
-      "inv_risk": double.parse(_investmentRiskController.text),
-      "inv_amount": double.parse(_investmentAmountController.text),
-      "reg": _regionController.text,
+      "inv_goal": goal,
+      "inv_risk": risk,
+      "inv_amount": amount,
+      "reg": _selectedState ?? "Unknown", // fallback if not selected
     };
 
     try {
@@ -306,7 +358,7 @@ Widget _buildRiskSlider() {
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Your preferences have been saved!")),
+          const SnackBar(content: TranslatedText("Your preferences have been saved!")),
         );
         setState(() {
           _formSaved = true;
@@ -325,6 +377,7 @@ Widget _buildFieldWithSpeech({
   required TextEditingController controller,
   required String? Function(String?) validator,
   bool isNumber = false,
+  bool isAgeField = false,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -359,9 +412,26 @@ Widget _buildFieldWithSpeech({
         ],
       ),
       TextFormField(
+        autovalidateMode:
+          isAgeField ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
         controller: controller,
         keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+        inputFormatters: isNumber
+            ? [FilteringTextInputFormatter.digitsOnly]
+            : [],
         validator: validator,
+        onChanged: isAgeField
+          ? (value) {
+              final age = int.tryParse(value);
+              if (age == null || age < 0 || age > 99) {
+                controller.text = value.replaceAll(RegExp(r'[^0-9]'), '');
+                controller.selection = TextSelection.fromPosition(
+                  TextPosition(offset: controller.text.length),
+                );
+              }
+            }
+          : null,
+
         style: GoogleFonts.poppins(
           fontSize: 15,
           color: Colors.black87,
@@ -373,6 +443,7 @@ Widget _buildFieldWithSpeech({
           fillColor: Colors.white,
         ),
       ),
+
       const SizedBox(height: 16),
     ],
   );
@@ -395,7 +466,7 @@ Widget build(BuildContext context) {
     appBar: AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
-      title: Text(
+      title: TranslatedText(
         'Investment Options',
         style: GoogleFonts.poppins(
         fontSize: 20,
@@ -446,7 +517,7 @@ Widget build(BuildContext context) {
                 child: ListView(
                   children: [
                     if (_username.isNotEmpty)
-                      Text(
+                      TranslatedText(
                         "Welcome, $_username!",
                         style: const TextStyle(
                           fontSize: 20,
@@ -457,11 +528,16 @@ Widget build(BuildContext context) {
                     const SizedBox(height: 20),
                     _buildFieldWithSpeech(
                       label: "Your Age",
+                      isAgeField: true,
                       controller: _ageGroupController,
                       isNumber: true,
                       validator: (v) {
-                        final val = int.tryParse(v ?? "");
-                        return (val == null || val < 0 || val > 150) ? "Enter a valid age (0–150)" : null;
+                        if (v == null || v.isEmpty) return "Age is required";
+                        final age = int.tryParse(v);
+                        if (age == null || age < 0 || age > 99) {
+                          return "Enter a valid age (0–99)";
+                        }
+                        return null;
                       },
                     ),
                    Theme(
@@ -497,11 +573,11 @@ Widget build(BuildContext context) {
                       items: [
                         DropdownMenuItem(
                           value: "Recurring",
-                          child: Text("Recurring", style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue.shade800)),
+                          child: TranslatedText("Recurring", style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue.shade800)),
                         ),
                         DropdownMenuItem(
                           value: "Lumpsum",
-                          child: Text("Lumpsum", style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue.shade800)),
+                          child: TranslatedText("Lumpsum", style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue.shade800)),
                         ),
                       ],
                       onChanged: (val) => setState(() => _investmentFrequency = val!),
@@ -523,11 +599,47 @@ Widget build(BuildContext context) {
                       isNumber: true,
                       validator: (v) => double.tryParse(v ?? "") == null ? "Enter a number" : null,
                     ),
-                    _buildFieldWithSpeech(
-                      label: "Your Location (City or Region)",
-                      controller: _regionController,
-                      validator: (v) => (v == null || v.isEmpty) ? "Enter Region" : null,
+                    Theme(
+                    data: Theme.of(context).copyWith(
+                      canvasColor: Colors.white,
+                      shadowColor: Colors.grey.shade300,
                     ),
+                    child: DropdownButtonFormField<String>(
+  value: _selectedState,
+  decoration: InputDecoration(
+    labelText: "Select Your State",
+    labelStyle: GoogleFonts.poppins(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      color: Colors.blue.shade900,
+    ),
+    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+    filled: true,
+    fillColor: Colors.white,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Colors.blueGrey),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Colors.blueGrey),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.blue.shade700, width: 2),
+    ),
+  ),
+  items: _indianStates.map((state) {
+    return DropdownMenuItem<String>(
+      value: state,
+      child: TranslatedText(state, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue.shade800)),
+    );
+  }).toList(),
+  onChanged: (val) => setState(() => _selectedState = val!),
+),
+
+                ),
+
                     const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: _submitForm,
@@ -537,7 +649,7 @@ Widget build(BuildContext context) {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         textStyle: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
                       ),
-                      child: const Text("Save My Preferences", style: TextStyle(fontSize: 16, color: Colors.white)),
+                      child: const TranslatedText("Save My Preferences", style: TextStyle(fontSize: 16, color: Colors.white)),
                     ).animate().fade(duration: 600.ms).slideY(),
                     if (_formSaved)
                       Padding(
@@ -545,11 +657,12 @@ Widget build(BuildContext context) {
                         child: ElevatedButton(
                           onPressed: _generateStrategy,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF1565C0),
+                            backgroundColor: const Color.fromARGB(255, 28, 81, 165),
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            textStyle: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
                           ),
-                          child: const Text("Get My Investment Plan", style: TextStyle(color: Colors.white)),
+                          child: const TranslatedText("Get My Investment Plan", style: TextStyle(fontSize: 16, color: Colors.white)),
                         ).animate().fadeIn().slideY(begin: 0.3),
                       ),
                   ],

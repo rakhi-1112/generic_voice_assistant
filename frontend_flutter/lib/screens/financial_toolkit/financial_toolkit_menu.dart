@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_flutter/config/translated_text.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -18,7 +19,7 @@ class FinancialToolkitMenu extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: primaryBlue,
-        title: Text(
+        title: TranslatedText(
           "🧰 SME Financial Toolkit",
           style: GoogleFonts.poppins(
             color: Colors.white,
@@ -33,7 +34,7 @@ class FinancialToolkitMenu extends StatelessWidget {
         padding: const EdgeInsets.all(20.0),
         child: ListView(
           children: [
-            Text(
+            TranslatedText(
               "Empowering Small Businesses",
               style: GoogleFonts.poppins(
                 fontSize: 18,
@@ -97,11 +98,11 @@ class FinancialToolkitMenu extends StatelessWidget {
       elevation: 3,
       child: ListTile(
         leading: Icon(icon, size: 28, color: Colors.blue.shade700),
-        title: Text(
+        title: TranslatedText(
           title,
           style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black87),
         ),
-        subtitle: Text(
+        subtitle: TranslatedText(
           subtitle,
           style: GoogleFonts.poppins(fontSize: 13.5, color: Colors.black54),
         ),

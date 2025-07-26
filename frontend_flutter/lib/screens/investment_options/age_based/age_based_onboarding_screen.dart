@@ -1,6 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:frontend_flutter/config/translated_text.dart';
+import 'package:frontend_flutter/screens/investment_options/age_based/ActionPlanScreen.dart';
+import 'package:frontend_flutter/screens/investment_options/age_based/recommendation_data.dart';
 import 'package:frontend_flutter/screens/investment_options/age_based/utils/age_group_engine.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -43,7 +46,7 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
     setState(() {});
   }
 
-  void nextStep() {
+  void nextStep1() {
     if (currentStep < 2) {
       setState(() => currentStep++);
     } else {
@@ -51,13 +54,34 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
     }
   }
 
+
+void nextStep(BuildContext context, String goal) {
+  // final plan = financialRecommendations[goal] ?? financialRecommendations["Other"];
+  // final plan = financialRecommendations[goal] ?? const {
+  //   "Mutual Funds": "30%",
+  //   "Fixed Deposits": "30%",
+  //   "SIPs": "40%",
+  // };
+
+  final goalFormatted = goal[0].toUpperCase() + goal.substring(1); // Capitalize
+final plan = financialRecommendations[goalFormatted] ?? financialRecommendations["Other"]!;
+
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ActionPlanScreen(goal: goal, plan: plan),
+    ),
+  );
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Text(
+        title: TranslatedText(
           'AI Powered Financial Coach',
           style: GoogleFonts.poppins(
             fontSize: 20,
@@ -123,19 +147,19 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
           key: key,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("🐬", style: TextStyle(fontSize: 80))
+            const TranslatedText("🐬", style: TextStyle(fontSize: 80))
                 .animate()
                 .fade(duration: 600.ms)
                 .scale(duration: 800.ms)
                 .then()
                 .shake(hz: 1, curve: Curves.easeOut),
             const SizedBox(height: 20),
-            const Text("dolFin", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold))
+            const TranslatedText("dolFin", style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold))
                 .animate()
                 .fadeIn(duration: 600.ms, delay: 400.ms),
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-              child: Text(
+              child: TranslatedText(
                 "Your age-smart financial coach that adapts to your generation's money style",
                 textAlign: TextAlign.center,
               ),
@@ -181,14 +205,14 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
         ),
         child: Column(
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 40))
+            TranslatedText(emoji, style: const TextStyle(fontSize: 40))
                 .animate()
                 .scaleXY(begin: 1, end: 1.2)
                 .then(delay: 200.ms)
                 .shake(hz: 2),
             const SizedBox(height: 10),
-            Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-            Text(range),
+            TranslatedText(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+            TranslatedText(range),
           ],
         ),
       ),
@@ -231,9 +255,9 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(profile.displayName, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+        TranslatedText(profile.displayName, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
         const SizedBox(height: 12),
-        const Text("What's your current financial situation?"),
+        const TranslatedText("What's your current financial situation?"),
         const SizedBox(height: 24),
         ...options.map((opt) => GestureDetector(
               onTap: () => updateData('financialSituation', opt['value']),
@@ -249,9 +273,9 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(opt['emoji']!, style: const TextStyle(fontSize: 32)),
+                    TranslatedText(opt['emoji']!, style: const TextStyle(fontSize: 32)),
                     const SizedBox(width: 16),
-                    Expanded(child: Text(opt['label']!, style: const TextStyle(fontSize: 16))),
+                    Expanded(child: TranslatedText(opt['label']!, style: const TextStyle(fontSize: 16))),
                   ],
                 ),
               ),
@@ -260,8 +284,8 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
           Padding(
             padding: const EdgeInsets.only(top: 20.0),
             child: ElevatedButton(
-              onPressed: nextStep,
-              child: const Text("Continue ✨"),
+              onPressed: nextStep1,
+              child: const TranslatedText("Continue ✨"),
             ).animate().scale().fadeIn(),
           ),
       ],
@@ -293,7 +317,7 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("What's your main financial goal?", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+        const TranslatedText("What's your main financial goal?", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
         const SizedBox(height: 20),
         ...profile.commonGoals.map((goal) {
           final config = goalMap[goal]!;
@@ -308,9 +332,9 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
               ),
               child: Row(
                 children: [
-                  Text(config['emoji']!, style: const TextStyle(fontSize: 32)),
+                  TranslatedText(config['emoji']!, style: const TextStyle(fontSize: 32)),
                   const SizedBox(width: 16),
-                  Expanded(child: Text(config['label']!, style: const TextStyle(fontSize: 16))),
+                  Expanded(child: TranslatedText(config['label']!, style: const TextStyle(fontSize: 16))),
                 ],
               ),
             ),
@@ -320,8 +344,10 @@ class _AgeBasedOnboardingScreenState extends State<AgeBasedOnboardingScreen> wit
           Padding(
             padding: const EdgeInsets.only(top: 20.0),
             child: ElevatedButton(
-              onPressed: nextStep,
-              child: const Text("Create My Action Plan! 🔥"),
+              onPressed: () {
+    nextStep(context, onboardingData['primaryGoal']);
+  },
+              child: const TranslatedText("Create My Action Plan! 🔥"),
             ).animate().scale().fadeIn(),
           ),
       ],

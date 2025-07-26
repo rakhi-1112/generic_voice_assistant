@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_flutter/config/translated_text.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../api/toolkit_api.dart';
 
@@ -58,7 +59,7 @@ class _FundingScreenState extends State<FundingScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: primaryColor,
-        title: Text(
+        title: TranslatedText(
           "💰 Funding Opportunities",
           style: GoogleFonts.poppins(
             fontSize: 20,
@@ -74,7 +75,7 @@ class _FundingScreenState extends State<FundingScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Select Business Sector", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+            TranslatedText("Select Business Sector", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
               value: selectedSector,
@@ -96,7 +97,7 @@ class _FundingScreenState extends State<FundingScreen> {
               items: sectors.map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(
+                  child: TranslatedText(
                     value,
                     style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500),
                   ),
@@ -144,7 +145,7 @@ class _FundingScreenState extends State<FundingScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              label: Text(
+              label: TranslatedText(
                 "Find Funding Options",
                 style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 16),
               ),
@@ -154,7 +155,7 @@ class _FundingScreenState extends State<FundingScreen> {
             Expanded(
               child: fundingInfo.isEmpty
                   ? Center(
-                      child: Text("No matches found", style: GoogleFonts.poppins()),
+                      child: TranslatedText("No matches found", style: GoogleFonts.poppins()),
                     )
                   : ListView.builder(
                       itemCount: fundingInfo.length,
@@ -169,7 +170,7 @@ class _FundingScreenState extends State<FundingScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                TranslatedText(
                                   item['name'] ?? 'Untitled Program',
                                   style: GoogleFonts.poppins(
                                     fontSize: 17,
@@ -178,7 +179,7 @@ class _FundingScreenState extends State<FundingScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                Text(
+                                TranslatedText(
                                   item['description'] ?? 'No description available.',
                                   style: GoogleFonts.poppins(fontSize: 14),
                                 ),
@@ -186,9 +187,9 @@ class _FundingScreenState extends State<FundingScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text("Industry: ${item['industry'] ?? 'N/A'}",
+                                    TranslatedText("Industry: ${item['industry'] ?? 'N/A'}",
                                         style: GoogleFonts.poppins(fontSize: 13)),
-                                    Text("Region: ${item['region'] ?? 'N/A'}",
+                                    TranslatedText("Region: ${item['region'] ?? 'N/A'}",
                                         style: GoogleFonts.poppins(fontSize: 13)),
                                   ],
                                 ),
@@ -196,9 +197,9 @@ class _FundingScreenState extends State<FundingScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text("Eligibility: ${item['eligibility'] ?? 'N/A'}",
+                                    TranslatedText("Eligibility: ${item['eligibility'] ?? 'N/A'}",
                                         style: GoogleFonts.poppins(fontSize: 13)),
-                                    Text(
+                                    TranslatedText(
                                       "Funding: ₹${item['funding_min']} – ₹${item['funding_max']}",
                                       style: GoogleFonts.poppins(fontSize: 13),
                                     ),

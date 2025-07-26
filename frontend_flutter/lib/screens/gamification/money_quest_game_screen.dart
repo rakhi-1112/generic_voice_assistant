@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_flutter/config/translated_text.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:glassmorphism/glassmorphism.dart';
 
 class MoneyQuestGameScreen extends StatefulWidget {
   const MoneyQuestGameScreen({super.key});
@@ -104,32 +107,63 @@ class _MoneyQuestGameScreenState extends State<MoneyQuestGameScreen>
     }
 
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Lottie.asset(animationAsset, width: 200, repeat: false),
-          const SizedBox(height: 20),
-          Text(
-            message,
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 10),
-          Text("Your Financial IQ Score: $_score",
-              style: const TextStyle(fontSize: 18)),
-          const SizedBox(height: 20),
-          ElevatedButton.icon(
-            onPressed: _restartGame,
-            icon: const Icon(Icons.restart_alt, color: Colors.white),
-            label: const Text("Restart"),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.deepPurple,
-              foregroundColor: Colors.white, // sets text and icon color
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: GlassmorphicContainer(
+        width: MediaQuery.of(context).size.width * 0.9,
+        height: 380,
+        borderRadius: 20,
+        blur: 15,
+        border: 1,
+        linearGradient: LinearGradient(
+          colors: [Colors.white.withOpacity(0.2), Colors.blue.withOpacity(0.1)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderGradient: LinearGradient(
+          colors: [Colors.white.withOpacity(0.3), Colors.blue.withOpacity(0.2)],
+        ),
+        child: Center( // 👈 This centers the content vertically AND horizontally inside the container
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Lottie.asset(animationAsset, width: 160, repeat: false),
+                const SizedBox(height: 16),
+                TranslatedText(
+                  message,
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                TranslatedText(
+                  "Your Financial IQ Score: $_score",
+                  style: GoogleFonts.poppins(fontSize: 16, color: Colors.black87),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton.icon(
+                  onPressed: _restartGame,
+                  icon: const Icon(Icons.restart_alt),
+                  label: const TranslatedText("Restart"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF0A3D91),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
-    );
+    ),
+  );
   }
 
   Widget _buildQuestion() {
@@ -142,27 +176,27 @@ class _MoneyQuestGameScreenState extends State<MoneyQuestGameScreen>
         children: [
           LinearProgressIndicator(
             value: (_currentScenarioIndex + 1) / _scenarios.length,
-            color: Colors.green,
-            backgroundColor: Colors.grey[300],
+            color: Colors.blue.shade800,
+            backgroundColor: Colors.blue.shade100,
           ),
           const SizedBox(height: 20),
-          Text(
+          TranslatedText(
             scenario['question'],
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
           ...scenario['options'].map<Widget>((option) {
-            return AnimatedScale(
-              scale: 1.0,
-              duration: const Duration(milliseconds: 300),
-              child: Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                child: ListTile(
-                  title: Text(option['text'], style: const TextStyle(fontSize: 16)),
-                  onTap: () => _selectOption(option['score']),
-                  trailing: const Icon(Icons.arrow_forward_ios, color: Colors.deepPurple),
-                ),
+            return Card(
+              elevation: 6,
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ListTile(
+                title: TranslatedText(option['text'],
+                    style: GoogleFonts.poppins(fontSize: 15, color: Colors.black87)),
+                trailing: const Icon(Icons.arrow_forward_ios, color: Color(0xFF0A3D91)),
+                onTap: () => _selectOption(option['score']),
               ),
             );
           }).toList(),
@@ -179,22 +213,60 @@ class _MoneyQuestGameScreenState extends State<MoneyQuestGameScreen>
 
   @override
   Widget build(BuildContext context) {
-    bool gameFinished = _currentScenarioIndex >= _scenarios.length;
+    final bool gameFinished = _currentScenarioIndex >= _scenarios.length;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("🎯 Money Quest"),
-        backgroundColor: Colors.deepPurple,
+        title: TranslatedText("🎯 Money Quest",
+            style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Colors.black87)),
+        backgroundColor: Colors.white,
+        elevation: 1,
+        centerTitle: true,
+        foregroundColor: Colors.black87,
       ),
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 100),
-        transitionBuilder: (child, animation) =>
-            FadeTransition(opacity: animation, child: child),
-        child: Padding(
-          key: ValueKey(_currentScenarioIndex),
-          padding: const EdgeInsets.all(16.0),
-          child: gameFinished ? _buildResult() : _buildQuestion(),
-        ),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.white, Color(0xFFE3F2FD)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+            ),
+          ),
+          Center(
+            child: GlassmorphicContainer(
+              width: MediaQuery.of(context).size.width * 0.92,
+              height: MediaQuery.of(context).size.height * 0.88,
+              borderRadius: 20,
+              blur: 20,
+              border: 1,
+              linearGradient: LinearGradient(
+                colors: [Colors.white.withOpacity(0.2), Colors.blue.withOpacity(0.1)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderGradient: LinearGradient(
+                colors: [Colors.white.withOpacity(0.3), Colors.blue.withOpacity(0.2)],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 100),
+                  transitionBuilder: (child, animation) =>
+                      FadeTransition(opacity: animation, child: child),
+                  child: gameFinished
+                      ? _buildResult()
+                      : _buildQuestion(),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
